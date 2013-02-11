@@ -1,6 +1,8 @@
 *.class
 target/
 *~
+.project
+.classpath
 
 # Package Files #
 *.jar
