@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>ped</groupId>
-  <artifactId>dmlib</artifactId>
+  <artifactId>dmlibtest</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>dmlib</name>
+  <name>dmlibtest</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -18,8 +18,13 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+	  <groupId>log4j</groupId>
+	  <artifactId>log4j</artifactId>
+	  <version>1.2.17</version>
+	</dependency>
   </dependencies>
 </project>
