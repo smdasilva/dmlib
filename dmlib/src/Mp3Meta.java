@@ -102,5 +102,17 @@ public class Mp3Meta {
 		AudioFileIO.delete(this.file);
 	}
 	
+	public void copyTagToFile(File destination) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, CannotWriteException {
+		AudioFile dest = AudioFileIO.read(destination);
+		dest.setTag(this.tag);
+		dest.commit();
+	}
+	
+	public boolean compareFile(File fileToCompare) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
+		AudioFile toCompare = AudioFileIO.read(fileToCompare);
+		Tag t = toCompare.getTag();
+		return t.equals(this.tag);
+	}
+	
 
 }

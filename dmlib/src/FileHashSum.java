@@ -12,8 +12,8 @@ import java.security.MessageDigest;
 public class FileHashSum {  
 	
 	public static void main(String[] args) {
-		String sortie = md5sum(new File("/net/cremi/sdasilva/Documents/dmlib/dmlib/test.mp3"));
-		String sortie2 = md5sum(new File("/net/cremi/sdasilva/Documents/dmlib/dmlib/test1.mp3"));
+		String sortie = md5sum(new File("C:/Users/samuel/Desktop/MP3/test.mp3"));
+		String sortie2 = md5sum(new File("C:/Users/samuel/Desktop/MP3/test2.mp3"));
 		System.out.println(sortie);
 		System.out.println(sortie2);
 	}

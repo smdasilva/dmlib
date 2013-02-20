@@ -14,8 +14,8 @@ public class CompareFile {
 		//boolean resultat = compare("/net/cremi/sdasilva/Documents/Shaun.jpg","/net/cremi/sdasilva/Desktop/photo-dr.jpg");
 		//System.out.println(resultat);
 		
-		String  sortie = sha1sum(new File("/net/cremi/sdasilva/Documents/dmlib/dmlib/test.mp3"));
-	    String  sortie2 = sha1sum(new File("/net/cremi/sdasilva/Documents/dmlib/dmlib/test1.mp3"));
+		String  sortie = sha1sum(new File("C:/Users/samuel/Desktop/MP3/test.mp3"));
+	    String  sortie2 = sha1sum(new File("C:/Users/samuel/Desktop/MP3/test.mp3"));
 		
 	    System.out.println(sortie);
 	    System.out.println(sortie2);
