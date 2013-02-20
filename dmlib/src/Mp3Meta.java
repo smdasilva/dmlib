@@ -1,6 +1,8 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
+import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.CannotWriteException;
@@ -12,14 +14,15 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.KeyNotFoundException;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
+import org.jaudiotagger.tag.TagField;
 
 
 public class Mp3Meta {
-	MP3File file;
+	AudioFile file;
 	Tag tag;
 	
 	public Mp3Meta(File f) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
-		file = (MP3File) AudioFileIO.read(f);
+		file = AudioFileIO.read(f);
 		this.tag = file.getTag();
 	}
 	
@@ -94,5 +97,10 @@ public class Mp3Meta {
 	public void save() throws CannotWriteException{
 		this.file.commit();
 	}
+	
+	public void deleteMeta() throws CannotReadException, CannotWriteException {
+		AudioFileIO.delete(this.file);
+	}
+	
 
 }

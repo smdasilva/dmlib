@@ -30,7 +30,7 @@ public class Dico {
 		this.dictionary.put(1, datas);
 		return idIncrement++;
 	}
-	
+		
 	public String[] getDatas(int id) {
 		return this.dictionary.get(id);
 	}

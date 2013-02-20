@@ -9,18 +9,18 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class CompareFile {
-/*
+
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
 		//boolean resultat = compare("/net/cremi/sdasilva/Documents/Shaun.jpg","/net/cremi/sdasilva/Desktop/photo-dr.jpg");
 		//System.out.println(resultat);
 		
-		String  sortie = sha1sum(new File("/net/cremi/sdasilva/Documents/dmlib/dmlib/Caramel.mp3"));
-	    String  sortie2 = sha1sum(new File("/net/cremi/sdasilva/Documents/dmlib/dmlib/Caramel2.mp3"));
+		String  sortie = sha1sum(new File("/net/cremi/sdasilva/Documents/dmlib/dmlib/test.mp3"));
+	    String  sortie2 = sha1sum(new File("/net/cremi/sdasilva/Documents/dmlib/dmlib/test1.mp3"));
 		
 	    System.out.println(sortie);
 	    System.out.println(sortie2);
 	}
-*/	
+
 	  /** 
      * compare le <code>sha1sum</code> donné avec l'empreinte du fichier local <code>file</code>. 
      * @param file le fichier dont on doit calculer l'empreinte sha1 
