@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
@@ -27,9 +28,25 @@ public class Dico {
 		datas[0] = path;
 		datas[1] = type;
 		datas[2] = parent;
-		this.dictionary.put(1, datas);
-		return idIncrement++;
+		
+		int id = fileExist(path);
+		if(id > 0) {
+			return id;
+		} else {
+			this.dictionary.put(idIncrement, datas); 
+			return idIncrement++; }
+		}
+	
+	public int fileExist(String path) {
+		for ( Integer key : this.dictionary.keySet()) {
+			String[] datas = this.dictionary.get(key);
+			if (datas[0] == "path") {
+				return key;
+			}
+		} 
+		return -1;
 	}
+
 		
 	public String[] getDatas(int id) {
 		return this.dictionary.get(id);

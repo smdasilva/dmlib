@@ -12,8 +12,13 @@ import java.security.MessageDigest;
 public class FileHashSum {  
 	
 	public static void main(String[] args) {
+<<<<<<< HEAD
 		String sortie = md5sum(new File("/net/cremi/rbenojem/espaces/travail/biblio/test.mp3"));
 		String sortie2 = md5sum(new File("/net/cremi/rbenojem/espaces/travail/biblio/test2.mp3"));
+=======
+		String sortie = md5sum(new File("/net/cremi/sdasilva/Documents/dmlib/dmlib/musique.mp3"));
+		String sortie2 = md5sum(new File("/net/cremi/sdasilva/Documents/dmlib/dmlib/musique2.mp3"));
+>>>>>>> 44ddc11... modif modele
 		System.out.println(sortie);
 		System.out.println(sortie2);
 	}
@@ -102,7 +107,10 @@ public class FileHashSum {
             System.out.println("impossible de trouver le fichier : "+file.getAbsolutePath());  
         }  
                 return localMd5Sum;  
-        }  
+        }
+        
+
+        
   
     private static String getHexString(byte[] bytes) {  
         StringBuilder sb = new StringBuilder(bytes.length*2);  
