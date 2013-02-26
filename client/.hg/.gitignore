@@ -1,0 +1,9 @@
+/00changelog.i
+/branch
+/dirstate
+/hgrc
+/requires
+/undo.bookmarks
+/undo.branch
+/undo.desc
+/undo.dirstate
