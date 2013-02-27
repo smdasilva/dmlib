@@ -68,8 +68,9 @@ public class ServerRepository {
 
 	}
 
-	public List<String> getServer(String path) throws FileNotFoundException {
-		File repos = new File(path);
+	public List<String> getServer() throws FileNotFoundException {
+		File repos = new File("/net/cremi/rbenojem/espaces/travail/dmlib/dmlib/ServerRepository");
+		
 		File repository = new File(repos, "");
 		if (!repository.exists()) {
 			System.out.println("Annuaire not existe");
@@ -79,7 +80,7 @@ public class ServerRepository {
 			} else {
 				List<String> liste = new ArrayList<String>();
 
-				Scanner scanner = new Scanner(new File(path));
+				Scanner scanner = new Scanner(new File("/net/cremi/rbenojem/espaces/travail/dmlib/dmlib/ServerRepository"));
 
 				while (scanner.hasNextLine()) {
 					String line = scanner.nextLine();
@@ -93,6 +94,14 @@ public class ServerRepository {
 
 	}
 
+	
+	public List<String> getReporitory() throws FileNotFoundException {
+		
+		return null;
+		
+	}
+	
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//System.out.println(dir.exists());
