@@ -27,6 +27,8 @@ public class main {
 		//Mp3Meta mp3 = new Mp3Meta(new File("C:/Users/samuel/Desktop/MP3/test.MP3"));
 		//mp3.compareFile(new File("C:/Users/samuel/Desktop/MP3/test2.MP3"));
 		//mp3.copyTagToFile(new File("C:/Users/samuel/Desktop/MP3/test.mp3"));
+		
+		
 
 	}
 }
