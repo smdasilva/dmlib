@@ -27,6 +27,9 @@ public class HgServe {
 		init(repository, port);
 	}
 	
+	/**
+	* By default port is 8000
+	*/
 	public HgServe(Repository repository) {
 		init(repository, 8000);
 	}
