@@ -7,3 +7,6 @@ target/
 # Package Files #
 *.war
 *.ear
+/LastDmlib/nbproject/private/
+/MyDmlib/nbproject/private/
+/MyDmlib/build/
