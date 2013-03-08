@@ -159,4 +159,19 @@ public class Mp3Meta implements Serializable {
    		out.close();		
 	}
 	
+	public void setAllMetas(Mp3MetaSerializable metas) throws KeyNotFoundException, FieldDataInvalidException {
+		setAlbum(metas.getAlbum());
+		setArtist(metas.getArtist());
+		setComment(metas.getComment());
+		setComposer(metas.getComposer());
+		setDisc(metas.getDisc());
+		setGenre(metas.getGenre());
+		setTitle(metas.getTitle());
+		setTotalTrack(metas.getTotalTrack());
+		setTrack(metas.getTrack());
+		setYear(metas.getYear());
+	}
+	
+	
+	
 }

@@ -27,6 +27,7 @@ import java.util.List;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
@@ -45,7 +46,6 @@ public class Client {
        }
        RepositoryConfiguration  REPO_CONF = makeRepoConf();
        this.repository = Repository.open(REPO_CONF, repositoryPath);
-       this.dico = new Dico();
     }
    
 
@@ -92,7 +92,7 @@ public class Client {
             //push.on(this.repository).execute("http://curtis:8000");
         }
 	
-	public void serializeFileMeta(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException {
+	public void storeFileMeta(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException {
 		File f = new File(filePath);
         String nameFile = (f.getName() != null) ? f.getName().substring(0,f.getName().indexOf('.')) : "";
         String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
@@ -118,6 +118,7 @@ public class Client {
 		return e;
 	}
 	
+	/*
 	public JPGMetaSerializable getJPGStoredMeta(String filePath) throws FileNotFoundException, IOException, ClassNotFoundException {
 		File f = new File(filePath);
 		String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
@@ -126,6 +127,19 @@ public class Client {
 
 		JPGMetaSerializable e = (JPGMetaSerializable) ois.readObject();
 		return e;
+	}
+	*/
+	
+	public boolean isMp3MetaModifier(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ClassNotFoundException {
+		File f = new File(filePath);
+		Mp3Meta currentMp3 = new Mp3Meta(f);
+		// We get the old Meta version
+		Mp3MetaSerializable oldMeta = getMp3StoredMeta(filePath);
+		// Reconstruct the old Mp3 File
+		Mp3Meta oldMp3 = new Mp3Meta(f);
+		oldMp3.setAllMetas(oldMeta);
+		// Compare old and new tag
+		return currentMp3.compareTag(oldMp3);
 	}
     
         

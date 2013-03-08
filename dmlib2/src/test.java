@@ -27,7 +27,8 @@ public class test {
 	 */
 	public static void main(String[] args) throws ImageProcessingException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ClassNotFoundException, CannotWriteException {
 		Client c = new Client("/net/cremi/sdasilva/Documents/dmlib/Client", "http://picard:8000");
-		c.serializeFileMeta("/net/cremi/sdasilva/Documents/dmlib/Client/a/b/musique.mp3");
+		//c.storeFileMeta("/net/cremi/sdasilva/Documents/dmlib/Client/musique.mp3");
+		//c.isMp3MetaModifier("/net/cremi/sdasilva/Documents/dmlib/Client/musique.mp3");
 		//c.deserializeFileMeta("/net/cremi/sdasilva/Documents/dmlib/Boobs-Caramel.mp3");
 		//c.deserializeFileMeta("/net/cremi/sdasilva/Documents/dmlib/musique.mp3");
 		//m.getArtist();
@@ -43,6 +44,9 @@ public class test {
 		
 		//Mp3Meta m = new Mp3Meta(new File("/net/cremi/sdasilva/Documents/dmlib/musique.mp3"));
 		//m.serializeMetas("/net/cremi/sdasilva/Documents/dmlib/Meta/", "ESSAI");
+		
+		JPGMeta j = new JPGMeta(new File("/net/cremi/sdasilva/Documents/dmlib/Nikon.jpg"));
+		j.p();
 
 	}
 
