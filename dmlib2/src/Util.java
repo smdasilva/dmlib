@@ -13,7 +13,7 @@ public class Util {
 	public static void addLineIntoFile(String path, String value) throws IOException {
 		File repository = new File(path);
 		BufferedWriter w = new BufferedWriter(new FileWriter(path, true));
-		w.write(value + "\n");
+		w.write(value + "\r\n");
 		w.flush();
 		w.close();
 	}
@@ -38,12 +38,14 @@ public class Util {
 	
 				
 	public static void main(String[] argv) throws IOException {
-		/*clearFile("/net/cremi/sdasilva/Documents/dmlib/Client/testWrite");
-		addLineIntoFile("/net/cremi/sdasilva/Documents/dmlib/Client/testWrite", "dfmgjdfgjkldfhglj | sesdfsdkljsdfklj | toto");
-		addLineIntoFile("/net/cremi/sdasilva/Documents/dmlib/Client/testWrite", "dfmgjdfgjkldfhglj | sesdfsdkljsdfklj | dsfsdklfjsdfl");
-		addLineIntoFile("/net/cremi/sdasilva/Documents/dmlib/Client/testWrite", "dfmgjdfgjkldfhglj | sesdfsdkljsdfklj | dsfsdklfjsdfl");
-		addLineIntoFile("/net/cremi/sdasilva/Documents/dmlib/Client/testWrite", "dfmgjdfgjkldfhglj | sesdfsdkljsdfklj | dsfsdklfjsdfl");*/
-		readLineFromFile("/net/cremi/sdasilva/Documents/dmlib/Client/testWrite");
+		clearFile("C:/Users/samuel/Desktop/client/t");
+		addLineIntoFile("C:/Users/samuel/Desktop/client/t", "dfmgjdfgjkldfhglj | sesdfsdkljsdfklj | toto");
+		addLineIntoFile("C:/Users/samuel/Desktop/client/t", "dfmgjdfgjkldfhglj | sesdfsdkljsdfklj | dsfsdklfjsdfl");
 
+		/*
+		 * * sous Mac OS (Apple Macintosh), la fin de ligne est indiquée par un retour de chariot (CR) ;
+		 * sous Unix ou Linux, la fin de ligne est indiquée par un saut de ligne (LF) ;
+		 * sous Microsoft Windows, la fin de ligne est indiquée par un retour chariot suivi d'un saut de ligne (CRLF).
+		 */
 	}
 }

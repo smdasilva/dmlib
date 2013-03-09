@@ -1,7 +1,11 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Iterator;
@@ -88,6 +92,7 @@ public class Mp3Meta implements Serializable {
 	
 	public void setAlbum(String value) throws KeyNotFoundException, FieldDataInvalidException {
 		tag.setField(FieldKey.ALBUM,value);
+		
 	}
 	
 	public void setTitle(String value) throws KeyNotFoundException, FieldDataInvalidException {
@@ -135,6 +140,43 @@ public class Mp3Meta implements Serializable {
 		AudioFile dest = AudioFileIO.read(destination);
 		dest.setTag(this.tag);
 		dest.commit();
+	}
+	
+	public void saveTagToFile(String path) throws IOException {	
+		Util.clearFile(path);
+		/*Iterator<TagField> i = this.tag.getFields();
+		TagField tf;
+		while (i.hasNext()) {
+			tf = i.next();
+			Util.addLineIntoFile(path, tf.getId()+"|"+ tag.getFirst(tf.getId()));
+		}*/
+		
+		for(FieldKey fk : FieldKey.values()) {
+			if (tag.getFirst(fk) != "") {
+			Util.addLineIntoFile(path, fk +"|"+ tag.getFirst(fk));
+		}
+		}
+
+			//System.out.println(tag.getFirst("TALB"));
+			//Util.addLineIntoFile(path, fk +"|"+ tag.getFirst("TALB"));
+		
+	}
+	
+	public void saveTagFromFile(String path) throws IOException, KeyNotFoundException, FieldDataInvalidException, CannotWriteException {
+		InputStream ips=new FileInputStream(path); 
+		InputStreamReader ipsr=new InputStreamReader(ips);
+		BufferedReader br=new BufferedReader(ipsr);
+		String line;
+
+		while ((line=br.readLine())!=null){
+			String[] str = line.split("\\|");
+
+			if(!this.tag.getFirst(FieldKey.valueOf(str[0])).equals(str[1])) {
+				this.tag.setField(FieldKey.valueOf(str[0]), str[1]);
+			}    
+		}
+		br.close(); 
+		save();
 	}
 	
 	public boolean compareTag(Mp3Meta mp3Meta) {
