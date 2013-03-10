@@ -1,4 +1,4 @@
-import java.io.File;
+/*import java.io.File;
 import java.io.IOException;
 
 import org.farng.mp3.MP3File;
@@ -60,5 +60,6 @@ public class ID3Reader {
 		System.out.println("Album : " + album);
 		System.out.println("Genre : " + genre);
 		System.out.println("Annee : " + year);*/
+/*
 	}		
-}
+}*/

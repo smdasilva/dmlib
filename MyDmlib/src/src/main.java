@@ -13,14 +13,14 @@ public class main {
 		//ID3Reader id3reader = new ID3Reader("C:/Users/samuel/Desktop/test.MP3");
 		//id3reader.displayinformations();
 
-		Mp3Meta mp3 = new Mp3Meta(new File("/net/cremi/rbenojem/espaces/travail/biblio/test.mp3"));
+		/*Mp3Meta mp3 = new Mp3Meta(new File("/net/cremi/rbenojem/espaces/travail/biblio/test.mp3"));
 		Mp3Meta mp32 = new Mp3Meta(new File("/net/cremi/rbenojem/espaces/travail/biblio/test2.mp3"));
 
 		Mp3Meta mp3 = new Mp3Meta(new File("/net/cremi/sdasilva/Documents/dmlib/dmlib/musique.mp3"));
-		Mp3Meta mp32 = new Mp3Meta(new File("/net/cremi/sdasilva/Documents/dmlib/dmlib/musique2.mp3"));
+		Mp3Meta mp32 = new Mp3Meta(new File("/net/cremi/sdasilva/Documents/dmlib/dmlib/musique2.mp3"));*/
 
-		mp3.deleteMeta();
-		mp32.deleteMeta();
+		//mp3.deleteMeta();
+		//mp32.deleteMeta();
 		//System.out.println(mp3.getTitle());
 		//System.out.println(mp3.getTitle());
 		

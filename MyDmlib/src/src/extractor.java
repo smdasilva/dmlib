@@ -33,7 +33,7 @@ public class extractor {
 
 		// query the tag's value
 		String s = directory.getDescription(directory.TAG_EXIF_IMAGE_HEIGHT);
-		directory.getDescription(directory.T);
+		//directory.getDescription(directory.);
 		System.out.println(s);
 		
 	}

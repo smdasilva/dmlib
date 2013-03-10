@@ -1,3 +1,5 @@
+package mercurial;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,13 +13,13 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
 
 import com.drew.imaging.ImageProcessingException;
-import mercurial.JPGMeta;
+import com.drew.metadata.Metadata;
 
 
 public class Dico {
 	
 	Map<Integer, String[]> dictionary;
-	Metadata metas;
+	//Metadata metas;
 	int idIncrement = 0;
 		
 	public Dico() {
@@ -102,6 +104,15 @@ public class Dico {
 		return type;
 	}
 	
+	public String getType(File f) {
+		if (f.getAbsolutePath().lastIndexOf(".") > 0) {
+		    // On récupère l'extension du fichier
+		    String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
+		    return ext;
+		}
+		return null;
+	}
+		
 	public Mp3Meta getMP3Metas(int id) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
 		File file = new File(this.getPath(id));
 		Mp3Meta metas = new Mp3Meta(file);	
