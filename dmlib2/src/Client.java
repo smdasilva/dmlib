@@ -10,6 +10,8 @@ import com.aragost.javahg.commands.OutgoingCommand;
 import com.aragost.javahg.commands.PullCommand;
 import com.aragost.javahg.commands.PushCommand;
 import com.aragost.javahg.commands.RemoveCommand;
+import com.aragost.javahg.commands.StatusCommand;
+import com.aragost.javahg.commands.StatusResult;
 import com.aragost.javahg.commands.UpdateCommand;
 import com.aragost.javahg.internals.Server;
 import com.drew.imaging.ImageProcessingException;
@@ -38,6 +40,8 @@ public class Client {
      Repository repository;
      Dico dico;
      String MetaPath = "/net/cremi/sdasilva/Documents/dmlib/Client/Meta";
+     String HashPath = "/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/Hash";
+     
 	
     public Client(String repository, String Urlserver) {
        File repositoryPath = new File(repository);
@@ -46,6 +50,9 @@ public class Client {
        }
        RepositoryConfiguration  REPO_CONF = makeRepoConf();
        this.repository = Repository.open(REPO_CONF, repositoryPath);
+       
+       // Detect if modification have occured when the application was close
+       //modificationTreatment();
     }
    
 
@@ -70,27 +77,18 @@ public class Client {
 
         }
 	
-	public void FileAdded(String filePath) throws IOException{
-            
-            /***************************a voir ***********************/
-            PullCommand pull = new PullCommand(this.repository);
-            pull.execute();
-            UpdateCommand up = new UpdateCommand(this.repository);
-            up.execute();
-            /************************/
-
+	public void addFile(String filePath) {
             AddCommand ac = new AddCommand(this.repository);
-            ac.execute();
+            ac.execute(filePath);
             CommitCommand ci = new CommitCommand(this.repository);
-            ci.message("Ajout du fichier" + filePath).user("userrrr");
+            ci.message("Ajout du fichier" + filePath).user("admin");
             ci.execute();
-            PushCommand push = new PushCommand(this.repository);
-            //for(String server : getServeur()){
-            //    push.on(this.repository).execute(server);
-            //}
-            push.on(this.repository).execute("http://cody:8000");
-            //push.on(this.repository).execute("http://curtis:8000");
         }
+	
+	public void add() {
+		 AddCommand ac = new AddCommand(this.repository);
+         ac.execute();
+	}
 	
 	public void storeFileMeta(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException {
 		File f = new File(filePath);
@@ -106,6 +104,15 @@ public class Client {
         	JPGMeta fileMetas = new JPGMeta(f);	
         }
 	}
+	
+	public void storeFileHash(String filePath) throws IOException {
+     String hash = Util.sha1sum(filePath);
+     File f = new File(filePath);
+     String nameFile = (f.getName() != null) ? f.getName().substring(0,f.getName().lastIndexOf('.')) : "";
+     String repPath = f.getCanonicalPath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(f.getName(), "");
+     Util.writeIntoFile(HashPath+repPath, nameFile,hash);
+	}
+     
 
 	
 	public Mp3MetaSerializable getMp3StoredMeta(String filePath) throws FileNotFoundException, IOException, ClassNotFoundException {
@@ -143,7 +150,7 @@ public class Client {
 	}
     
         
-        public void RemoveFile(String fileName) throws IOException{
+        public void removeFile(String fileName) throws IOException{
             RemoveCommand rm = new RemoveCommand(this.repository);
             rm.execute(fileName);
             CommitCommand ci = new CommitCommand(this.repository);
@@ -157,7 +164,7 @@ public class Client {
             
         }
         
-        public void ChangeFile(String filePath, String nameFile) throws IOException{                 
+        public void changeFile(String filePath, String nameFile) throws IOException{                 
             CommitCommand ci = new CommitCommand(this.repository);
             ci.message("Ajout du fichier" + filePath).user("userrrr");
             ci.execute();
@@ -168,12 +175,12 @@ public class Client {
             push.on(this.repository).execute("http://cody:8000");
         }
         
-        public boolean IsFileModified(File f, String sha)
+        public boolean isFileModified(File f, String sha)
         {
         	FileHashSum hash = new FileHashSum();
         	return hash.compareSha1sum(f, sha);
         }
-        
+     /*   
         public boolean IsTagModifier(File f) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, ClassNotFoundException {
         	String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
         	
@@ -191,17 +198,20 @@ public class Client {
         	} else {
         		return false;
         	}
-        }
+        }*/
+       
         
-        public void Diff()throws IOException{   
-            
+        public String diff()throws IOException{   
             DiffCommand diff = new DiffCommand(this.repository);
-            System.out.println("ici"+diff.execute());
-            //System.out.println(diff.getReturnCode());
-            
+            return diff.execute();
         }
         
-        public void OutGoingFonc ()throws IOException{ 
+        public StatusResult status() {
+        	StatusCommand status = new StatusCommand(this.repository);
+        	return status.execute();
+        }
+        
+        public void outGoingFonc ()throws IOException{ 
             
             OutgoingCommand out = new OutgoingCommand(this.repository);
             //System.out.println(out.execute(this.repository));
@@ -214,7 +224,7 @@ public class Client {
             System.out.println(ch.getModifiedFiles());
         }
         
-         public void IncomingFonc ()throws IOException{ 
+         public void incomingFonc ()throws IOException{ 
             
             IncomingCommand in = new IncomingCommand(this.repository);
             //System.out.println(out.execute(this.repository));
@@ -226,4 +236,36 @@ public class Client {
             System.out.println(ch);
             System.out.println(ch.getModifiedFiles());
         }
+        
+        // Regeneration of the Metadata file and the Hash file if the file has been modified 
+        public void modificationTreatment() throws ImageProcessingException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
+        	StatusResult result = status();
+
+        	if(!result.getUnknown().isEmpty()) {
+        		List<String> list = new ArrayList<String>();
+        		list = result.getUnknown();
+        		for(String file : list) {
+        			addFile(file);
+        		}
+        	}
+        	
+        	if(!result.getModified().isEmpty()) {
+        		List<String> list = new ArrayList<String>();
+        		list = result.getModified();
+        		for(String file : list) {
+        			storeFileMeta(file);
+        			storeFileHash(file);
+        		}
+        	}
+        	
+        	
+        	if(!result.getMissing().isEmpty()) {
+        		List<String> list = new ArrayList<String>();
+        		list = result.getMissing();
+        		for(String file : list) {
+        			System.out.println("Vous avez supprimé le fichier :"+file);
+        		}
+        	}
+        }
+       
 }

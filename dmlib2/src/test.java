@@ -26,7 +26,9 @@ public class test {
 	 * @throws CannotWriteException 
 	 */
 	public static void main(String[] args) throws ImageProcessingException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ClassNotFoundException, CannotWriteException {
-		//Client c = new Client("/net/cremi/sdasilva/Documents/dmlib/Client", "http://picard:8000");
+		Client c = new Client("/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/", "http://picard:8000");
+		//c.modificationTreatment();
+		c.storeFileHash("/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/a/b/c/d/e/ok.txt");
 		//c.storeFileMeta("/net/cremi/sdasilva/Documents/dmlib/Client/musique.mp3");
 		//c.isMp3MetaModifier("/net/cremi/sdasilva/Documents/dmlib/Client/musique.mp3");
 		//c.deserializeFileMeta("/net/cremi/sdasilva/Documents/dmlib/Boobs-Caramel.mp3");
@@ -42,9 +44,9 @@ public class test {
 		//Mp3Meta m = new Mp3Meta(new File("/net/cremi/sdasilva/Documents/dmlib/musique.mp3"));
 		//m.copyTagToFile(new File("/net/cremi/sdasilva/Documents/dmlib/tag"));
 		
-		Mp3Meta m = new Mp3Meta(new File("C:/Users/samuel/Desktop/client/t.mp3"));
+		//Mp3Meta m = new Mp3Meta(new File("C:/Users/samuel/Desktop/client/t.mp3"));
 		//m.saveTagToFile("C:/Users/samuel/Desktop/client/t");
-		m.saveTagFromFile("C:/Users/samuel/Desktop/client/t");
+		//m.saveTagFromFile("C:/Users/samuel/Desktop/client/t");
 		//m.serializeMetas("/net/cremi/sdasilva/Documents/dmlib/Meta/", "ESSAI");
 		
 		//JPGMeta j = new JPGMeta(new File("/net/cremi/sdasilva/Documents/dmlib/Nikon.jpg"));

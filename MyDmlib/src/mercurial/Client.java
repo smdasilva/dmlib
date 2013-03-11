@@ -146,7 +146,7 @@ public class Client {
         String localSha1Sum = null;
         String nameFile = (f.getName() != null) ? f.getName().substring(0,f.getName().indexOf('.')) : "";
         String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
-        String repPath = f.getCanonicalPath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(nameFile+ext, "");
+        String repPath = f.getAbsolutePath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(nameFile+ext, "");
             
         
         if (f.exists() && f.isFile() && f.canRead()){  
