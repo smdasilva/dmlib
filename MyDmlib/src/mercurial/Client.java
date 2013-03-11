@@ -32,8 +32,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.FieldDataInvalidException;
+import org.jaudiotagger.tag.KeyNotFoundException;
 import org.jaudiotagger.tag.TagException;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
@@ -104,7 +107,7 @@ public class Client {
             //push.on(this.repository).execute("http://curtis:8000");
         }
 	
-	public void serializeFileMeta(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException {
+	public void serializeFileMeta(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, KeyNotFoundException, FieldDataInvalidException, CannotWriteException {
         File f = new File(filePath);
         String nameFile = (f.getName() != null) ? f.getName().substring(0,f.getName().indexOf('.')) : "";
         String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
@@ -116,8 +119,12 @@ public class Client {
                 fileMetas.serializeMetas(MetaPath+repPath, nameFile);		
         } else if (ext.equals(".jpg")) {
         	JPGMeta fileMetas = new JPGMeta(f);	
-                String repPath = f.getCanonicalPath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(nameFile+ext, "");
-                fileMetas.serializeMetas(MetaPath+repPath, nameFile);
+                 //System.out.println(MetaPath);
+               String repPath = f.getCanonicalPath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(nameFile+ext, "");
+                fileMetas.saveTagToFile(MetaPath+repPath+nameFile+".txt");
+                //fileMetas.saveTagFromFile(MetaPath+repPath+nameFile+".txt");
+                fileMetas.setColor(f.getAbsolutePath());
+                //fileMetas.serializeMetas(MetaPath+repPath, nameFile);
         }
 	}
 

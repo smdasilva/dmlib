@@ -14,198 +14,99 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.Tag;
+import com.drew.metadata.exif.ExifThumbnailDirectory;
+import com.drew.metadata.exif.NikonType1MakernoteDirectory;
+import com.drew.metadata.exif.NikonType2MakernoteDirectory;
+import com.drew.metadata.jpeg.JpegCommentDirectory;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
+import org.jaudiotagger.tag.FieldDataInvalidException;
+import org.jaudiotagger.tag.KeyNotFoundException;
+//import com.drew.metadata.tag.TagException;
+//import com.drew.metadata.tag.TagField;
 
 public class JPGMeta {
 
 	ExifSubIFDDirectory subFDDirectory;
         ExifIFD0Directory ifD0directory;
-        Directory directory;
+        Metadata metadata;
+        //Directory dir;
 	//ImageMetadataReader img;
-        
-       
+        //Tag tag;
+
         
 	public JPGMeta(File file) throws ImageProcessingException, IOException {
                 //Metadata metadata = null;
-		Metadata metadata = JpegMetadataReader.readMetadata(file);
+		metadata = JpegMetadataReader.readMetadata(file);
 		//this.directory = metadata.getDirectory(ExifSubIFDDirectory.class);
-                this.subFDDirectory = metadata.getDirectory(ExifSubIFDDirectory.class);
-                this.ifD0directory = metadata.getDirectory(ExifIFD0Directory.class);
         }
 	
-	public String getAperture() {
-            if((subFDDirectory.getDescription(subFDDirectory.TAG_APERTURE)) == null)  
-                    return "";
-       
-            return subFDDirectory.getTagName( subFDDirectory.TAG_APERTURE);
-           
-	}
         
-        /*public String getTitle(){
-            return directory.getDescription(directory.TAG_TILE_OFFSETS);
-        }*/     
-        
-        
-        public String getLensModel()
-        {   if(ifD0directory.getDescription(ifD0directory.TAG_MODEL)== null)      return "";  
-                        
-            return ifD0directory.getDescription(ifD0directory.TAG_MODEL);
-        }  
-        
-        /*public String getLensModel()
-        {   if()      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_LENS_MODEL);
-        }*/
-               
-        public String getColorSpace()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_COLOR_SPACE) == null)      return "";  
-             System.out.println(subFDDirectory.getDescription(subFDDirectory.TAG_COLOR_SPACE));
-            return subFDDirectory.getDescription(subFDDirectory.TAG_COLOR_SPACE);
-        }
-        
-        public String getCustomRendered()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_CUSTOM_RENDERED) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_CUSTOM_RENDERED);
-        }
-        
-        public String getDateTimeDigitized()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_DATETIME_DIGITIZED) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_DATETIME_DIGITIZED);
-        }
-        
-        
-
-        public String getDateTimeOriginal()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_DATETIME_ORIGINAL) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_DATETIME_ORIGINAL);
-        }
-        
-        
-        public String getExifVersion()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_EXIF_VERSION) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_EXIF_VERSION);
-        }
-        
-        
-        public String getExposureBiasValue()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_EXPOSURE_BIAS) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_EXPOSURE_BIAS);
-        }
-        
-        
-        public String getExposureMode()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_EXPOSURE_MODE) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_EXPOSURE_MODE);
-        }
-        
-        public String getExposureTime()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_EXPOSURE_TIME) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_EXPOSURE_TIME);
-        }
-        
-        public String getExposureProgram()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_EXPOSURE_PROGRAM) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_EXPOSURE_PROGRAM);
-        }
-        
-        
-        public String getFlash()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_FLASH) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_FLASH);
-        }
-        
-        public String getFlashPixVersion()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_FLASHPIX_VERSION) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_FLASHPIX_VERSION);
-        }
-        
-        /*public String getFNumber()
-        {   if()      return "";  
-            return directory.getDescription(directory.TAG_FNUMBER);
-        }*/
-        
-        public String getFocalLength()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_FOCAL_LENGTH) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_FOCAL_LENGTH);
-        }
-        
-        public String getFocalPlanResolutionUnit()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_FOCAL_PLANE_UNIT) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_FOCAL_PLANE_UNIT);
-        }
-        
-        public String getFocalPlanXResolution()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_FOCAL_PLANE_X_RES) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_FOCAL_PLANE_X_RES);
-        }
-        
-        
-        public String getFocalPlanYResolution()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_FOCAL_PLANE_Y_RES) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_FOCAL_PLANE_Y_RES);
-        }
-        
-        public String getIsoSpeddRatings()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_ISO_EQUIVALENT) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_ISO_EQUIVALENT);
-        }
-        
-        public String getMeteringMode()
-        {   
+        public void saveTagToFile(String path) throws IOException {   
             
-            if( subFDDirectory.getDescription(subFDDirectory.TAG_METERING_MODE) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_METERING_MODE);
-        }
+            Util.clearFile(path); 
+            Iterator ite = metadata.getDirectories().iterator();
+            while(ite.hasNext()){
+                Directory dire = (Directory) ite.next();                    
+                Collection<Tag> yo =   dire.getTags();                    
+                Iterator it = yo.iterator();
+                while(it.hasNext()){
+                    Tag t = (Tag) it.next();
+                    Util.addLineIntoFile(path, dire.getName()+" | "+t.getTagName()+" | "+t.getDescription());}
+                }                          
+}
+
+      
+	
+        public void saveTagFromFile(String path) throws IOException, KeyNotFoundException, FieldDataInvalidException, CannotWriteException {
+        InputStream ips=new FileInputStream(path);
+        InputStreamReader ipsr=new InputStreamReader(ips);
+        BufferedReader br=new BufferedReader(ipsr);
+        String line;
+
+        while ((line=br.readLine())!=null){     // On utilise ce bout de code pour parcourir le fichier ligne par ligne
+            String[] str = line.split("\\|"); // Je splite les "|" pour récupérer les colonnes, moi j'en est que deux, toi tu en auras trois
+            System.out.println(str[0]);
+            System.out.println(str[1]);
+            System.out.println(str[2]);
+            //this.metadata.
+            /*if(!this.tag.getFirst(FieldKey.valueOf(str[0])).equals(str[1])) {  // Je modifie le TAG du fichier UNIQUEMENT si la donnée a été changée
+                this.tag.setField(FieldKey.valueOf(str[0]), str[1]); */// Si la donnée a été changé, alors je fait le setField
+            }   
+        //}
+        //br.close();
+       // save();
+    }
+
         
-        public String getSceneCaptureType()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_SCENE_CAPTURE_TYPE) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_SCENE_CAPTURE_TYPE);
-        }
-       
-        public String getShutterSpeedValue()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_SHUTTER_SPEED) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_SHUTTER_SPEED);
-        }
-        
-        /*public String getSubsecondTime()
-        {   if()      return "";  
-            return directory.getDescription(directory.TAG_SUBSECOND_TIME);
-        }
-        
-        public String getSubsecondTimeDig()
-        {   if()      return "";  
-            return directory.getDescription(directory.TAG_SUBSECOND_TIME_DIGITIZED);
-        }
-        
-        public String getSubsecondTimeOrigin()
-        {   if()      return "";  
-            return directory.getDescription(directory.TAG_SUBSECOND_TIME_ORIGINAL);
-        }*/
+  public void setColor(String path) throws IOException
+  {
+      //Util.clearFile(path); 
+            Iterator ite = metadata.getDirectories().iterator();
+            while(ite.hasNext()){
+                Directory dire = (Directory) ite.next(); 
+                Collection<Tag> yo =   dire.getTags();                    
+                Iterator it = yo.iterator();
+                while(it.hasNext()){
+                    Tag t = (Tag) it.next();
+                    dire.setString(t.getTagType(), "SUPARGB");
+                }
+            }
+
+      
+                    
+                   //directory.getDescription(directory.TAG_EXPOSURE_BIAS);
+  }
         
         
-        public String getWhiteBalance()
-        {   if(subFDDirectory.getDescription(subFDDirectory.TAG_WHITE_BALANCE) == null)      return "";  
-            return subFDDirectory.getDescription(subFDDirectory.TAG_WHITE_BALANCE);
-        }
-        
-        /*public String getFlashComp()
-        {   if()      return "";  
-            return directory.getDescription(directory.TAG_FLASH_ENERGY);
-        }
-        
-        public String getLendId()
-        {   if()      return "";  
-            return directory.getDescription(directory.TAG_LENS_SPECIFICATION);
-        }
-        
-        public String getLensSerialNumb()
-        {   if()      return "";  
-            return directory.getDescription(directory.TAG_LENS_SERIAL_NUMBER);
-        }*/
-        
-        
-        
-        
-        public void serializeMetas(String MetaPath, String nameFile) throws FileNotFoundException, IOException
+   /*     public void serializeMetas(String MetaPath, String nameFile) throws FileNotFoundException, IOException
         {   
             File path = new File(MetaPath);  
             if (!path.exists())
@@ -241,7 +142,7 @@ public class JPGMeta {
             
             //System.out.println(this.getMeteringMode());
             
-	}
+	}*/
         
         
         
