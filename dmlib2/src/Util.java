@@ -95,18 +95,5 @@ public class Util {
     addLineIntoFile(repPath+name, content);
 }
 				
-	public static void main(String[] argv) throws IOException {
-		//clearFile("C:/Users/samuel/Desktop/client/t");
-		//addLineIntoFile("C:/Users/samuel/Desktop/client/t", "dfmgjdfgjkldfhglj | sesdfsdkljsdfklj | toto");
-		//addLineIntoFile("C:/Users/samuel/Desktop/client/t", "dfmgjdfgjkldfhglj | sesdfsdkljsdfklj | dsfsdklfjsdfl");
-		//writeIntoFile("/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/a/b/c/d/e/", "ok", "qslkjqsdlksjqlqkjd2424354//*ui");
-		writeIntoFile("/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/", "test.txt", "content");
-		File f = new File("/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/crotte.txt");
-		System.out.println(f.getName());
-		/*
-		 * * sous Mac OS (Apple Macintosh), la fin de ligne est indiqu�e par un retour de chariot (CR) ;
-		 * sous Unix ou Linux, la fin de ligne est indiqu�e par un saut de ligne (LF) ;
-		 * sous Microsoft Windows, la fin de ligne est indiqu�e par un retour chariot suivi d'un saut de ligne (CRLF).
-		 */
-	}
+	
 }
