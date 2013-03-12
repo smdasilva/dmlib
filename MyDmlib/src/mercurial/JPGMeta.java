@@ -36,114 +36,82 @@ import net.sourceforge.jheader.*;
 import net.sourceforge.jheader.JpegHeaders.*;
 import net.sourceforge.jheader.App1Header.*;
 
-//import com.drew.metadata.tag.TagException;
-//import com.drew.metadata.tag.TagField;
 
 public class JPGMeta {
 
-	ExifSubIFDDirectory subFDDirectory;
-        ExifIFD0Directory ifD0directory;
+
         Metadata metadata;
-        //Directory dir;
-	//ImageMetadataReader img;
-        //Tag tag;
-        PanasonicMakernoteDirectory dir;
         JpegHeaders headers;
+        SortedMap<Tag, TagValue> tags;
         
 	public JPGMeta(String file) throws ImageProcessingException, IOException, FileNotFoundException, JpegFormatException {
-                //Metadata metadata = null;
-		/*metadata = JpegMetadataReader.readMetadata(file);
-                this.ifD0directory = metadata.getDirectory(ExifIFD0Directory.class);
-                this.dir = metadata.getDirectory(PanasonicMakernoteDirectory.class);*/
-             new File(file);
+
+             new File(file);             
              JpegHeaders.preheat();   
              headers = new JpegHeaders(file);
-                
+             App1Header  app1Header = headers.getApp1Header();
+             this.tags = app1Header.getTags();
+             
+            //System.out.println(app1Header.getValue(Tag.RELATEDIMAGELENGTH));
+            //app1Header.getValue(Tag.RESOLUTIONUNIT);
         }
 	
         
-        public void saveTagToFile(String pathFile, String pathDest) throws IOException, FileNotFoundException, JpegFormatException {   
+        public void saveTagFromFile(String pathFile, String pathDest) throws IOException, FileNotFoundException, JpegFormatException {   
             
             
-          new File(pathDest);  
-          Util.clearFile(pathDest); 
-          
-          //JpegHeaders.preheat();
-
-	  //JpegHeaders headers = new JpegHeaders(pathFile);
-          
-           //if (headers.getApp1Header() == null)
-		//headers.convertToExif();
-            App1Header app1Header = headers.getApp1Header();
-          
-            System.out.println(app1Header.getValue(Tag.MAXAPERTUREVALUE));
-           
-             System.out.println(app1Header.getValue(Tag.MAKE));
-          
-            
+            new File(pathDest);  
+            Util.clearFile(pathDest); 
+            if (headers.getApp1Header() == null)
+		headers.convertToExif();
+    
+            App1Header app1Header = headers.getApp1Header();          
             SortedMap<Tag, TagValue> tags = app1Header.getTags();
-          
 	    for (Tag tag : tags.keySet())
 	    {
 		TagValue value = tags.get(tag);
-                Util.addLineIntoFile(pathDest, tag.location+" | "+tag.name+" | "+ tag.id +" | "+ value); 
-                
+                if(!value.toString().trim().isEmpty()) {
+                    Util.addLineIntoFile(pathDest, tag.location+"|"+ tag.toString() +"|"+ value); 
+                }
             }            
             
-        }
-                                 
+        }                                 
         
         
-         public void test(String path) throws IOException, FileNotFoundException, JpegFormatException {   
-            
-	   
-	    if (headers.getApp1Header() == null)
+         /*public void test(String path) throws IOException, FileNotFoundException, JpegFormatException {  
+             
+             if (headers.getApp1Header() == null)
 		headers.convertToExif();
 
 	    App1Header app1Header = headers.getApp1Header();
-
 	    // set a field
-	    app1Header.setValue(new TagValue(Tag.IMAGEDESCRIPTION,
-					     "rgRADICAL"));
-            
-            
-             app1Header.setValue(new TagValue(Tag.ARTIST, "SuperYyoyoyoyooyoyoyoyo"));
-          
-            
-            
-	    // save the file, making a backup first
+	    app1Header.setValue(new TagValue(Tag.IMAGEDESCRIPTION, "rgRADICAL")); 
+            app1Header.setValue(new TagValue(Tag.MODEL, "YEAHHAHAHAHAHAHAHkkkkkkkkkkkkkkkkkkkkkkkjjjjjjjjjjjjjjAHAHAHAHAHA"));
+            // save the file, making a backup first
 	    headers.save(false);
          
 	    
-	}
-             
-           
-                //write1.setTag(ExifIFD.FOCALLENGTH, "5.0"));
-            // write1.setTagValue(t, "YEAAAAAAAAAAAHHHHHHH");
-             //dir.setString(101, "samuel"); 
+	}*/
 
-
-      
-	
-        public void saveTagFromFile(String path) throws IOException, KeyNotFoundException, FieldDataInvalidException, CannotWriteException {
+        public void saveTagToFile(String path) throws IOException, KeyNotFoundException, FieldDataInvalidException, CannotWriteException, TagFormatException, ExifFormatException, FileNotFoundException, JpegFormatException {
         InputStream ips=new FileInputStream(path);
         InputStreamReader ipsr=new InputStreamReader(ips);
         BufferedReader br=new BufferedReader(ipsr);
         String line;
-
+        
         while ((line=br.readLine())!=null){     // On utilise ce bout de code pour parcourir le fichier ligne par ligne
             String[] str = line.split("\\|"); // Je splite les "|" pour récupérer les colonnes, moi j'en est que deux, toi tu en auras trois
-            System.out.println(str[0]);
-            System.out.println(str[1]);
-            System.out.println(str[2]);
-            //this.metadata.
-            /*if(!this.tag.getFirst(FieldKey.valueOf(str[0])).equals(str[1])) {  // Je modifie le TAG du fichier UNIQUEMENT si la donnée a été changée
-                this.tag.setField(FieldKey.valueOf(str[0]), str[1]); */// Si la donnée a été changé, alors je fait le setField
-            }   
-        //}
-        //br.close();
-       // save();
+            if(!this.tags.get(Tag.valueOf(str[1])).toString().equals(str[2])) {
+                App1Header app1Header = headers.getApp1Header();
+                app1Header.setValue(new TagValue(this.tags.get(Tag.valueOf(str[1])).getTag(), str[2])); 
+            }
+                
+        }
+        
+        headers.save(false);
+        br.close();
     }
+        
 
         
   /*public void setColor(String path) throws IOException
