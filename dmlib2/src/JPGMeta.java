@@ -8,6 +8,7 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 
+
 public class JPGMeta {
 
 	ExifSubIFDDirectory directory;
@@ -21,12 +22,18 @@ public class JPGMeta {
 	public void p() {
 		for (Directory directory : metadata.getDirectories()) {
 		    for (Tag tag : this.directory.getTags()) {
+		    	
 		    }
 		}
 	}
 	
 	public String getAperture() {
 		return directory.getDescription(directory.TAG_APERTURE);
+	}
+	
+	public void test() {
+		 metadata.System.err.println();
+		
 	}
 	
 	
