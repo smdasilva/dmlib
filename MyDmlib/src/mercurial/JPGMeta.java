@@ -13,10 +13,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import com.drew.metadata.exif.ExifIFD0Directory;
-import com.drew.metadata.Tag;
+//import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.drew.metadata.exif.NikonType1MakernoteDirectory;
 import com.drew.metadata.exif.NikonType2MakernoteDirectory;
+import com.drew.metadata.exif.PanasonicMakernoteDirectory;
 import com.drew.metadata.jpeg.JpegCommentDirectory;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -26,9 +27,15 @@ import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.SortedMap;
 import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import org.jaudiotagger.tag.FieldDataInvalidException;
 import org.jaudiotagger.tag.KeyNotFoundException;
+
+import net.sourceforge.jheader.*;
+import net.sourceforge.jheader.JpegHeaders.*;
+import net.sourceforge.jheader.App1Header.*;
+
 //import com.drew.metadata.tag.TagException;
 //import com.drew.metadata.tag.TagField;
 
@@ -40,28 +47,81 @@ public class JPGMeta {
         //Directory dir;
 	//ImageMetadataReader img;
         //Tag tag;
-
+        PanasonicMakernoteDirectory dir;
+        JpegHeaders headers;
         
-	public JPGMeta(File file) throws ImageProcessingException, IOException {
+	public JPGMeta(String file) throws ImageProcessingException, IOException, FileNotFoundException, JpegFormatException {
                 //Metadata metadata = null;
-		metadata = JpegMetadataReader.readMetadata(file);
-		//this.directory = metadata.getDirectory(ExifSubIFDDirectory.class);
+		/*metadata = JpegMetadataReader.readMetadata(file);
+                this.ifD0directory = metadata.getDirectory(ExifIFD0Directory.class);
+                this.dir = metadata.getDirectory(PanasonicMakernoteDirectory.class);*/
+             new File(file);
+             JpegHeaders.preheat();   
+             headers = new JpegHeaders(file);
+                
         }
 	
         
-        public void saveTagToFile(String path) throws IOException {   
+        public void saveTagToFile(String pathFile, String pathDest) throws IOException, FileNotFoundException, JpegFormatException {   
             
-            Util.clearFile(path); 
-            Iterator ite = metadata.getDirectories().iterator();
-            while(ite.hasNext()){
-                Directory dire = (Directory) ite.next();                    
-                Collection<Tag> yo =   dire.getTags();                    
-                Iterator it = yo.iterator();
-                while(it.hasNext()){
-                    Tag t = (Tag) it.next();
-                    Util.addLineIntoFile(path, dire.getName()+" | "+t.getTagName()+" | "+t.getDescription());}
-                }                          
-}
+            
+          new File(pathDest);  
+          Util.clearFile(pathDest); 
+          
+          //JpegHeaders.preheat();
+
+	  //JpegHeaders headers = new JpegHeaders(pathFile);
+          
+           //if (headers.getApp1Header() == null)
+		//headers.convertToExif();
+            App1Header app1Header = headers.getApp1Header();
+          
+            System.out.println(app1Header.getValue(Tag.MAXAPERTUREVALUE));
+           
+             System.out.println(app1Header.getValue(Tag.MAKE));
+          
+            
+            SortedMap<Tag, TagValue> tags = app1Header.getTags();
+          
+	    for (Tag tag : tags.keySet())
+	    {
+		TagValue value = tags.get(tag);
+                Util.addLineIntoFile(pathDest, tag.location+" | "+tag.name+" | "+ tag.id +" | "+ value); 
+                
+            }            
+            
+        }
+                                 
+        
+        
+         public void test(String path) throws IOException, FileNotFoundException, JpegFormatException {   
+            
+	   
+	    if (headers.getApp1Header() == null)
+		headers.convertToExif();
+
+	    App1Header app1Header = headers.getApp1Header();
+
+	    // set a field
+	    app1Header.setValue(new TagValue(Tag.IMAGEDESCRIPTION,
+					     "rgRADICAL"));
+            
+            
+             app1Header.setValue(new TagValue(Tag.ARTIST, "SuperYyoyoyoyooyoyoyoyo"));
+          
+            
+            
+	    // save the file, making a backup first
+	    headers.save(false);
+         
+	    
+	}
+             
+           
+                //write1.setTag(ExifIFD.FOCALLENGTH, "5.0"));
+            // write1.setTagValue(t, "YEAAAAAAAAAAAHHHHHHH");
+             //dir.setString(101, "samuel"); 
+
 
       
 	
@@ -86,7 +146,7 @@ public class JPGMeta {
     }
 
         
-  public void setColor(String path) throws IOException
+  /*public void setColor(String path) throws IOException
   {
       //Util.clearFile(path); 
             Iterator ite = metadata.getDirectories().iterator();
@@ -96,14 +156,17 @@ public class JPGMeta {
                 Iterator it = yo.iterator();
                 while(it.hasNext()){
                     Tag t = (Tag) it.next();
-                    dire.setString(t.getTagType(), "SUPARGB");
+                    System.out.println(t.getTagType());
+                    //dire.setString(t.getTagType(), "SUPARGB");
+                    t.getDescription();
+                    
                 }
             }
 
       
                     
                    //directory.getDescription(directory.TAG_EXPOSURE_BIAS);
-  }
+  }*/
         
         
    /*     public void serializeMetas(String MetaPath, String nameFile) throws FileNotFoundException, IOException

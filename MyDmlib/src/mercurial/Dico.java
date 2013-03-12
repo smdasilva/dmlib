@@ -121,8 +121,8 @@ public class Dico {
 	
 	public JPGMeta getJPGMetas(int id) throws ImageProcessingException, IOException {
 		File file = new File(this.getPath(id));
-		JPGMeta metas = new JPGMeta(file);	
-		return metas;
+		//JPGMeta metas = new JPGMeta(file);	
+		return null;
 	}
 	
 	

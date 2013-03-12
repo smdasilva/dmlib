@@ -11,7 +11,9 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
 
 import com.drew.imaging.ImageProcessingException;
+import java.io.FileNotFoundException;
 import mercurial.JPGMeta;
+import net.sourceforge.jheader.JpegFormatException;
 
 
 public class Dico {
@@ -108,9 +110,9 @@ public class Dico {
 		return metas;
 	}
 	
-	public JPGMeta getJPGMetas(int id) throws ImageProcessingException, IOException {
+	public JPGMeta getJPGMetas(int id) throws ImageProcessingException, IOException, FileNotFoundException, JpegFormatException {
 		File file = new File(this.getPath(id));
-		JPGMeta metas = new JPGMeta(file);	
+		JPGMeta metas = new JPGMeta(file.getAbsolutePath());	
 		return metas;
 	}
 	

@@ -30,6 +30,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
+import net.sourceforge.jheader.JpegFormatException;
 
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.CannotWriteException;
@@ -47,11 +48,11 @@ public class Client {
      Repository repository;
      Dico dico;
      //String MetaPath = "/net/cremi/sdasilva/Documents/dmlib/Client/Meta";
-     //String MetaPath = "/net/cremi/abndoye/Desktop/espaces/travail/MYDEARTEST/Meta";
-     //String HashPath = "/net/cremi/abndoye/Desktop/espaces/travail/MYDEARTEST/Hash";
+     String MetaPath = "/net/cremi/abndoye/Desktop/espaces/travail/MYDEARTEST/Meta";
+     String HashPath = "/net/cremi/abndoye/Desktop/espaces/travail/MYDEARTEST/Hash";
      
-     String MetaPath = "/home/abndoye/Bureau/SUPASERV/Meta";
-     String HashPath = "/home/abndoye/Bureau/SUPASERV/Hash";
+     //String MetaPath = "/home/abndoye/Bureau/SUPASERV/Meta";
+     //String HashPath = "/home/abndoye/Bureau/SUPASERV/Hash";
 	
     public Client(String repository, String Urlserver) {
        File repositoryPath = new File(repository);
@@ -107,7 +108,7 @@ public class Client {
             //push.on(this.repository).execute("http://curtis:8000");
         }
 	
-	public void serializeFileMeta(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, KeyNotFoundException, FieldDataInvalidException, CannotWriteException {
+	public void serializeFileMeta(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, KeyNotFoundException, FieldDataInvalidException, CannotWriteException, FileNotFoundException, JpegFormatException {
         File f = new File(filePath);
         String nameFile = (f.getName() != null) ? f.getName().substring(0,f.getName().indexOf('.')) : "";
         String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
@@ -118,12 +119,12 @@ public class Client {
        		String repPath = f.getCanonicalPath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(nameFile+ext, "");
                 fileMetas.serializeMetas(MetaPath+repPath, nameFile);		
         } else if (ext.equals(".jpg")) {
-        	JPGMeta fileMetas = new JPGMeta(f);	
+        	JPGMeta fileMetas = new JPGMeta(filePath);	
                  //System.out.println(MetaPath);
                String repPath = f.getCanonicalPath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(nameFile+ext, "");
-                fileMetas.saveTagToFile(MetaPath+repPath+nameFile+".txt");
+                //fileMetas.saveTagToFile(MetaPath+repPath+nameFile);
                 //fileMetas.saveTagFromFile(MetaPath+repPath+nameFile+".txt");
-                fileMetas.setColor(f.getAbsolutePath());
+                //fileMetas.setColor(f.getAbsolutePath());
                 //fileMetas.serializeMetas(MetaPath+repPath, nameFile);
         }
 	}
@@ -229,7 +230,7 @@ public class Client {
         	return hash.compareSha1sum(f, sha);
         }
         
-        public boolean IsTagModifier(File f) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, ClassNotFoundException {
+        public boolean IsTagModifier(File f) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, ClassNotFoundException, FileNotFoundException, JpegFormatException {
         	String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
         	
         	File fichierMeta =  new File("repertoirMeta") ;
@@ -241,7 +242,7 @@ public class Client {
         		return metasFichier.compareTag(metaStorage);
         	} else if (ext == ".jpg") {
         		JPGMeta metaStorage = (JPGMeta)ois.readObject() ;
-        		JPGMeta metasFichier = new JPGMeta(f);
+        		JPGMeta metasFichier = new JPGMeta(f.getAbsolutePath());
         		return true;
         	} else {
         		return false;
