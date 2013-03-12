@@ -1,5 +1,3 @@
-package mercurial;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -121,8 +119,8 @@ public class Dico {
 	
 	public JPGMeta getJPGMetas(int id) throws ImageProcessingException, IOException {
 		File file = new File(this.getPath(id));
-		//JPGMeta metas = new JPGMeta(file);	
-		return null;
+		JPGMeta metas = new JPGMeta(file);	
+		return metas;
 	}
 	
 	

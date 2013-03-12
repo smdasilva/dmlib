@@ -1,6 +1,3 @@
-package mercurial;
- 
-
 import com.aragost.javahg.Changeset;
 import com.aragost.javahg.Repository;
 import com.aragost.javahg.RepositoryConfiguration;
@@ -13,6 +10,8 @@ import com.aragost.javahg.commands.OutgoingCommand;
 import com.aragost.javahg.commands.PullCommand;
 import com.aragost.javahg.commands.PushCommand;
 import com.aragost.javahg.commands.RemoveCommand;
+import com.aragost.javahg.commands.StatusCommand;
+import com.aragost.javahg.commands.StatusResult;
 import com.aragost.javahg.commands.UpdateCommand;
 import com.aragost.javahg.internals.Server;
 import com.drew.imaging.ImageProcessingException;
@@ -21,23 +20,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
-import net.sourceforge.jheader.JpegFormatException;
 
 import org.jaudiotagger.audio.exceptions.CannotReadException;
-import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
-import org.jaudiotagger.tag.FieldDataInvalidException;
-import org.jaudiotagger.tag.KeyNotFoundException;
+import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
@@ -47,12 +39,9 @@ public class Client {
      String hgrcPath;
      Repository repository;
      Dico dico;
-     //String MetaPath = "/net/cremi/sdasilva/Documents/dmlib/Client/Meta";
-     String MetaPath = "/net/cremi/abndoye/Desktop/espaces/travail/MYDEARTEST/Meta";
-     String HashPath = "/net/cremi/abndoye/Desktop/espaces/travail/MYDEARTEST/Hash";
+     String MetaPath = "/net/cremi/sdasilva/Documents/dmlib/Client/Meta";
+     String HashPath = "/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/Hash";
      
-     //String MetaPath = "/home/abndoye/Bureau/SUPASERV/Meta";
-     //String HashPath = "/home/abndoye/Bureau/SUPASERV/Hash";
 	
     public Client(String repository, String Urlserver) {
        File repositoryPath = new File(repository);
@@ -61,7 +50,9 @@ public class Client {
        }
        RepositoryConfiguration  REPO_CONF = makeRepoConf();
        this.repository = Repository.open(REPO_CONF, repositoryPath);
-       this.dico = new Dico();
+       
+       // Detect if modification have occured when the application was close
+       //modificationTreatment();
     }
    
 
@@ -86,30 +77,21 @@ public class Client {
 
         }
 	
-	public void FileAdded(String filePath) throws IOException{
-            
-            /***************************a voir ***********************/
-            PullCommand pull = new PullCommand(this.repository);
-            pull.execute();
-            UpdateCommand up = new UpdateCommand(this.repository);
-            up.execute();
-            /************************/
-
+	public void addFile(String filePath) {
             AddCommand ac = new AddCommand(this.repository);
-            ac.execute();
+            ac.execute(filePath);
             CommitCommand ci = new CommitCommand(this.repository);
-            ci.message("Ajout du fichier" + filePath).user("userrrr");
+            ci.message("Ajout du fichier" + filePath).user("admin");
             ci.execute();
-            PushCommand push = new PushCommand(this.repository);
-            //for(String server : getServeur()){
-            //    push.on(this.repository).execute(server);
-            //}
-            push.on(this.repository).execute("http://cody:8000");
-            //push.on(this.repository).execute("http://curtis:8000");
         }
 	
-	public void serializeFileMeta(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, KeyNotFoundException, FieldDataInvalidException, CannotWriteException, FileNotFoundException, JpegFormatException {
-        File f = new File(filePath);
+	public void add() {
+		 AddCommand ac = new AddCommand(this.repository);
+         ac.execute();
+	}
+	
+	public void storeFileMeta(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException {
+		File f = new File(filePath);
         String nameFile = (f.getName() != null) ? f.getName().substring(0,f.getName().indexOf('.')) : "";
         String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
 
@@ -117,67 +99,22 @@ public class Client {
         if (ext.equals(".mp3")) {
        		Mp3Meta fileMetas = new Mp3Meta(f);
        		String repPath = f.getCanonicalPath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(nameFile+ext, "");
-                fileMetas.serializeMetas(MetaPath+repPath, nameFile);		
-        } else if (ext.equals(".jpg")) {
-        	JPGMeta fileMetas = new JPGMeta(filePath);	
-                 //System.out.println(MetaPath);
-               String repPath = f.getCanonicalPath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(nameFile+ext, "");
-                //fileMetas.saveTagToFile(MetaPath+repPath+nameFile);
-                //fileMetas.saveTagFromFile(MetaPath+repPath+nameFile+".txt");
-                //fileMetas.setColor(f.getAbsolutePath());
-                //fileMetas.serializeMetas(MetaPath+repPath, nameFile);
+       		fileMetas.serializeMetas(MetaPath+repPath, nameFile);		
+        } else if (ext == ".jpg") {
+        	JPGMeta fileMetas = new JPGMeta(f);	
         }
 	}
+	
+	public void storeFileHash(String filePath) throws IOException {
+     String hash = Util.sha1sum(filePath);
+     File f = new File(filePath);
+     String nameFile = (f.getName() != null) ? f.getName().substring(0,f.getName().lastIndexOf('.')) : "";
+     String repPath = f.getCanonicalPath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(f.getName(), "");
+     Util.writeIntoFile(HashPath+repPath, nameFile,hash);
+	}
+     
 
-        
-        private static String getHexString(byte[] bytes) {  
-        StringBuilder sb = new StringBuilder(bytes.length*2);  
-        for (byte b : bytes) {  
-                        if (b <= 0x0F && b >= 0x00) { // On rajoute le 0 de poid fort ignoré à la conversion.  
-                                sb.append('0');  
-                        }  
-            sb.append( String.format("%x", b) );  
-        }  
-        return sb.toString();  
-    }  
-        
-        
-	public void hashedFile(String filePath) throws IOException{
-        File f = new File(filePath);
-        String localSha1Sum = null;
-        String nameFile = (f.getName() != null) ? f.getName().substring(0,f.getName().indexOf('.')) : "";
-        String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
-        String repPath = f.getAbsolutePath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(nameFile+ext, "");
-            
-        
-        if (f.exists() && f.isFile() && f.canRead()){  
-            try {  
-                MessageDigest md = MessageDigest.getInstance("SHA-1");  
-                DigestInputStream dis = new DigestInputStream(new FileInputStream(f), md);  
-                dis.on(true);  
-  
-                while (dis.read() != -1){  
-                    ;  
-                }  
-                byte[] b = md.digest();  
-                localSha1Sum = getHexString(b);  
-            } catch (Exception ex) {  
-                ex.printStackTrace(); }      
-                
-              File path = new File(HashPath+repPath);  
-                if (!path.exists())
-		  { path.mkdirs(); }  
-             ObjectOutputStream out = new ObjectOutputStream( new FileOutputStream(HashPath+repPath+"/"+ nameFile));
-             out.writeChars(localSha1Sum);
-             out.flush();
-             out.close();
-        
-             
-        }
-        
-        }
-        
-        
+	
 	public Mp3MetaSerializable getMp3StoredMeta(String filePath) throws FileNotFoundException, IOException, ClassNotFoundException {
 		File f = new File(filePath);
 		String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
@@ -188,6 +125,7 @@ public class Client {
 		return e;
 	}
 	
+	/*
 	public JPGMetaSerializable getJPGStoredMeta(String filePath) throws FileNotFoundException, IOException, ClassNotFoundException {
 		File f = new File(filePath);
 		String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
@@ -197,9 +135,22 @@ public class Client {
 		JPGMetaSerializable e = (JPGMetaSerializable) ois.readObject();
 		return e;
 	}
+	*/
+	
+	public boolean isMp3MetaModifier(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ClassNotFoundException {
+		File f = new File(filePath);
+		Mp3Meta currentMp3 = new Mp3Meta(f);
+		// We get the old Meta version
+		Mp3MetaSerializable oldMeta = getMp3StoredMeta(filePath);
+		// Reconstruct the old Mp3 File
+		Mp3Meta oldMp3 = new Mp3Meta(f);
+		oldMp3.setAllMetas(oldMeta);
+		// Compare old and new tag
+		return currentMp3.compareTag(oldMp3);
+	}
     
         
-        public void RemoveFile(String fileName) throws IOException{
+        public void removeFile(String fileName) throws IOException{
             RemoveCommand rm = new RemoveCommand(this.repository);
             rm.execute(fileName);
             CommitCommand ci = new CommitCommand(this.repository);
@@ -213,7 +164,7 @@ public class Client {
             
         }
         
-        public void ChangeFile(String filePath, String nameFile) throws IOException{                 
+        public void changeFile(String filePath, String nameFile) throws IOException{                 
             CommitCommand ci = new CommitCommand(this.repository);
             ci.message("Ajout du fichier" + filePath).user("userrrr");
             ci.execute();
@@ -224,13 +175,13 @@ public class Client {
             push.on(this.repository).execute("http://cody:8000");
         }
         
-        public boolean IsFileModified(File f, String sha)
+        public boolean isFileModified(File f, String sha)
         {
         	FileHashSum hash = new FileHashSum();
         	return hash.compareSha1sum(f, sha);
         }
-        
-        public boolean IsTagModifier(File f) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, ClassNotFoundException, FileNotFoundException, JpegFormatException {
+     /*   
+        public boolean IsTagModifier(File f) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, ClassNotFoundException {
         	String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
         	
         	File fichierMeta =  new File("repertoirMeta") ;
@@ -242,22 +193,25 @@ public class Client {
         		return metasFichier.compareTag(metaStorage);
         	} else if (ext == ".jpg") {
         		JPGMeta metaStorage = (JPGMeta)ois.readObject() ;
-        		JPGMeta metasFichier = new JPGMeta(f.getAbsolutePath());
+        		JPGMeta metasFichier = new JPGMeta(f);
         		return true;
         	} else {
         		return false;
         	}
-        }
+        }*/
+       
         
-        public void Diff()throws IOException{   
-            
+        public String diff()throws IOException{   
             DiffCommand diff = new DiffCommand(this.repository);
-            System.out.println("ici"+diff.execute());
-            //System.out.println(diff.getReturnCode());
-            
+            return diff.execute();
         }
         
-        public void OutGoingFonc ()throws IOException{ 
+        public StatusResult status() {
+        	StatusCommand status = new StatusCommand(this.repository);
+        	return status.execute();
+        }
+        
+        public void outGoingFonc ()throws IOException{ 
             
             OutgoingCommand out = new OutgoingCommand(this.repository);
             //System.out.println(out.execute(this.repository));
@@ -270,7 +224,7 @@ public class Client {
             System.out.println(ch.getModifiedFiles());
         }
         
-         public void IncomingFonc ()throws IOException{ 
+         public void incomingFonc ()throws IOException{ 
             
             IncomingCommand in = new IncomingCommand(this.repository);
             //System.out.println(out.execute(this.repository));
@@ -282,4 +236,36 @@ public class Client {
             System.out.println(ch);
             System.out.println(ch.getModifiedFiles());
         }
+        
+        // Regeneration of the Metadata file and the Hash file if the file has been modified 
+        public void modificationTreatment() throws ImageProcessingException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
+        	StatusResult result = status();
+
+        	if(!result.getUnknown().isEmpty()) {
+        		List<String> list = new ArrayList<String>();
+        		list = result.getUnknown();
+        		for(String file : list) {
+        			addFile(file);
+        		}
+        	}
+        	
+        	if(!result.getModified().isEmpty()) {
+        		List<String> list = new ArrayList<String>();
+        		list = result.getModified();
+        		for(String file : list) {
+        			storeFileMeta(file);
+        			storeFileHash(file);
+        		}
+        	}
+        	
+        	
+        	if(!result.getMissing().isEmpty()) {
+        		List<String> list = new ArrayList<String>();
+        		list = result.getMissing();
+        		for(String file : list) {
+        			System.out.println("Vous avez supprimé le fichier :"+file);
+        		}
+        	}
+        }
+       
 }

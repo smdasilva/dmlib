@@ -1,9 +1,11 @@
-package mercurial;
-
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Iterator;
@@ -35,12 +37,11 @@ public class Mp3Meta implements Serializable {
 		this.tag = file.getTag();
 	}
 	
-	
+	/* Getter to access Metadata file */
 	public Tag getTag() {
 		return this.tag;
 	}
 	
-	// Getter pour acceder aux metas du fichier
 	public String getArtist() {
 		return tag.getFirst(FieldKey.ARTIST);
 	}
@@ -82,7 +83,7 @@ public class Mp3Meta implements Serializable {
 	}
 
 	
-	// Setter pour modifier les metas
+	/* Setter to modify the Metadata file */
 	
 	public void setArtist(String value) throws KeyNotFoundException, FieldDataInvalidException {
 		tag.setField(FieldKey.ARTIST,value);
@@ -90,6 +91,7 @@ public class Mp3Meta implements Serializable {
 	
 	public void setAlbum(String value) throws KeyNotFoundException, FieldDataInvalidException {
 		tag.setField(FieldKey.ALBUM,value);
+		
 	}
 	
 	public void setTitle(String value) throws KeyNotFoundException, FieldDataInvalidException {
@@ -133,32 +135,31 @@ public class Mp3Meta implements Serializable {
 		AudioFileIO.delete(this.file);
 	}
 	
-	public void copyTagToFile(File destination) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, CannotWriteException {
-		AudioFile dest = AudioFileIO.read(destination);
-		dest.setTag(this.tag);
-		dest.commit();
-	}
-	
-	public boolean compareTag(Mp3Meta mp3Meta) {
-		return this.tag.equals(mp3Meta.getTag());
-	}
-	
-	public boolean compareFile(File fileToCompare) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
-		AudioFile toCompare = AudioFileIO.read(fileToCompare);
-		Tag t = toCompare.getTag();
-		return t.equals(this.tag);
-	}
-	
-	public void serializeMetas(String MetaPath, String nameFile) throws FileNotFoundException, IOException {
-		File path = new File(MetaPath);  
-		if (!path.exists())
-		  { path.mkdirs(); }
+	public void saveTagToFile(String path) throws IOException {	
+		Util.clearFile(path);
 		
-		ObjectOutputStream out = new ObjectOutputStream( new FileOutputStream(MetaPath+"/"+ nameFile));
-        Mp3MetaSerializable mp3 = new Mp3MetaSerializable(getArtist(), getAlbum(), getTitle(), getYear(), getComment(), getTrack(), getDisc(), getComposer(), getGenre(), getTotalTrack());
-        out.writeObject(mp3);
-   		out.flush();
-   		out.close();		
+		for(FieldKey fk : FieldKey.values()) {
+			if (tag.getFirst(fk) != "") {
+			Util.addLineIntoFile(path, fk +"|"+ tag.getFirst(fk));
+			}
+		}	
+	}
+	
+	public void saveTagFromFile(String path) throws IOException, KeyNotFoundException, FieldDataInvalidException, CannotWriteException {
+		InputStream ips=new FileInputStream(path); 
+		InputStreamReader ipsr=new InputStreamReader(ips);
+		BufferedReader br=new BufferedReader(ipsr);
+		String line;
+
+		while ((line=br.readLine())!=null){
+			String[] str = line.split("\\|");
+
+			if(!this.tag.getFirst(FieldKey.valueOf(str[0])).equals(str[1])) {
+				this.tag.setField(FieldKey.valueOf(str[0]), str[1]);
+			}    
+		}
+		br.close(); 
+		save();
 	}
 	
 }
