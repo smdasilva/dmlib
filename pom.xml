@@ -26,5 +26,10 @@
 	  <artifactId>log4j</artifactId>
 	  <version>1.2.17</version>
 	</dependency>
+    <dependency>
+    	<groupId>jarsync</groupId>
+    	<artifactId>jarsync</artifactId>
+    	<version>0.2.1</version>
+    </dependency>
   </dependencies>
 </project>
