@@ -131,8 +131,18 @@ public class Mp3Meta implements Serializable {
 		this.file.commit();
 	}
 	
-	public void deleteMeta() throws CannotReadException, CannotWriteException {
-		AudioFileIO.delete(this.file);
+	public void deleteMeta() throws CannotReadException, CannotWriteException, KeyNotFoundException, FieldDataInvalidException {
+		//AudioFileIO.delete(this.file);
+		for(FieldKey fk : FieldKey.values()) {
+			
+			if(fk != FieldKey.COVER_ART && fk != FieldKey.ENGINEER && 
+			fk != FieldKey.PRODUCER && fk != FieldKey.ARRANGER && fk != 
+			FieldKey.DJMIXER && fk != FieldKey.MIXER) {
+			try { tag.setField(fk, "1"); } catch(Exception e) 
+			{System.out.println(e); };
+			}
+			}
+			save();
 	}
 	
 	public void saveTagToFile(String path) throws IOException {	

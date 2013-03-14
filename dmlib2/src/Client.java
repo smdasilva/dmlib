@@ -37,20 +37,41 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 public class Client {
     
      String hgrcPath;
-     Repository repository;
-     Dico dico;
+     List<Repository> repository;
+     List<String> server;
      String MetaPath = "/net/cremi/sdasilva/Documents/dmlib/Client/Meta";
      String HashPath = "/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/Hash";
      
 	
-    public Client(String repository, String Urlserver) {
-       File repositoryPath = new File(repository);
-       if (!repositoryPath.exists()) {
-        cloneServer(new File(repository),Urlserver);
-       }
+    public Client(String installationPath) throws IOException {
+       this.server = Util.getContent(installationPath+"/server");
+       List<String> repo =  Util.getContent(installationPath+"/repository");
+      
+       // Read the repository repertory and open the repositories
        RepositoryConfiguration  REPO_CONF = makeRepoConf();
-       this.repository = Repository.open(REPO_CONF, repositoryPath);
+       for(String r : repo) {
+    	   File f = new File(r);
+    	   Repository e = Repository.open(REPO_CONF, f);
+    	   this.repository.add(e);
+       }
        
+       if(!this.server.isEmpty()) {
+    	   String[] s = installationPath.split("\\/");
+    	   String last = s[s.length-1];
+    	   String rep_parent = installationPath.substring(0,installationPath.length()-last.length());
+    	   
+    	   for(String serv : this.server) {
+    	   String repository_path = rep_parent+"/"+Math.random()+"/";
+    	   File file = new File(repository_path);
+    	   file.mkdirs();
+    	   cloneServer(file,serv);
+    	   Util.addLineIntoFile(installationPath+"repository", repository_path);
+    	   }
+       }
+       
+       
+ 
+              
        // Detect if modification have occured when the application was close
        //modificationTreatment();
     }
