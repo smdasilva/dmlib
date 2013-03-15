@@ -25,7 +25,7 @@ public class RepositoriesListTest {
 		  "libraries: {image: /home/titi/image, music: /home/titi/music}" +
 		  "name: titi";
 		
-		assertEquals(expected, actual)
+		assertEquals(expected, "actual");
 	}
 
 }
