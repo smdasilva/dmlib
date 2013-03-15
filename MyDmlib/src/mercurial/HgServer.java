@@ -1,5 +1,6 @@
 package mercurial;
 
+import com.aragost.javahg.BaseRepository;
 import java.io.IOException;
 
 import com.aragost.javahg.Repository;
@@ -37,6 +38,16 @@ init(repository, 8000);
 private void init(Repository repository, int port) {
 this.repository = repository;
 this.port = port;
+
+    BaseRepository br;      
+  try {
+    br = Repository.open(repository.getDirectory());
+        } catch (IllegalArgumentException iae) {
+         br = Repository.create(repository.getDirectory());
+        }    
+        br.close();
+
+
 }
 
 public int getPort() {
@@ -49,7 +60,6 @@ this.port = port;
 
 public Process execute() throws IOException {
         Runtime runtime = Runtime.getRuntime();
-        
         String[] cmd = new String[]{"hg", "serve", "-p " + port};
         
         LOG.info("Start hg serve in " + repository.getDirectory() + " on port " + this.port);

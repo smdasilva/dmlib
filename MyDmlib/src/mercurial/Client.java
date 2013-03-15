@@ -28,6 +28,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import net.sourceforge.jheader.JpegFormatException;
 
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
@@ -49,8 +50,21 @@ public class Client {
 
     public Client(String installationPath) throws IOException {
         this.installationPath = installationPath;
-        RepositoryConfiguration REPO_CONF = makeRepoConf();
-        this.repository = Repository.open(REPO_CONF, new File(this.installationPath));
+        //RepositoryConfiguration REPO_CONF = makeRepoConf();
+        //this.repository = Repository.open(REPO_CONF, new File(this.installationPath));
+        
+        // 
+        /*BaseRepository br;
+        File f = new File("/tmp");        
+        try {
+         br = Repository.open(f);
+        } catch (IllegalArgumentException iae) {
+         br = Repository.create(f);
+        }    
+        br.close();*/
+        
+        
+        
         this.server = new HgServer(this.repository, 8000);
     }
     
@@ -125,8 +139,9 @@ return conf;
             return list;
 
         }
-/*
-public void addFile(String filePath) {
+
+public void addFile(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, FileNotFoundException, JpegFormatException {
+            storeFileMeta(filePath);
             AddCommand ac = new AddCommand(this.repository);
             ac.execute(filePath);
             CommitCommand ci = new CommitCommand(this.repository);
@@ -139,7 +154,8 @@ AddCommand ac = new AddCommand(this.repository);
          ac.execute();
 }
 
-public void storeFileMeta(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException {
+
+public void storeFileMeta(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, FileNotFoundException, JpegFormatException {
 File f = new File(filePath);
         String nameFile = (f.getName() != null) ? f.getName().substring(0,f.getName().indexOf('.')) : "";
         String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
@@ -148,9 +164,10 @@ File f = new File(filePath);
         if (ext.equals(".mp3")) {
         Mp3Meta fileMetas = new Mp3Meta(f);
         String repPath = f.getCanonicalPath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(nameFile+ext, "");
-        fileMetas.serializeMetas(MetaPath+repPath, nameFile);
+        //fileMetas.serializeMetas(MetaPath+repPath, nameFile);
         } else if (ext == ".jpg") {
-         JPGMeta fileMetas = new JPGMeta(f);
+         JPGMeta fileMetas = new JPGMeta(f.getName());
+         fileMetas.saveTagFromFile(nameFile, ext);
         }
 }
 
@@ -164,39 +181,6 @@ public void storeFileHash(String filePath) throws IOException {
      
 
 
-public Mp3MetaSerializable getMp3StoredMeta(String filePath) throws FileNotFoundException, IOException, ClassNotFoundException {
-File f = new File(filePath);
-String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
-        String nameFile = (f.getName() != null) ? f.getName().substring(0,f.getName().indexOf('.')) : "";
-ObjectInputStream ois = new ObjectInputStream( new FileInputStream(MetaPath+"/"+ nameFile));
-
-Mp3MetaSerializable e = (Mp3MetaSerializable) ois.readObject();
-return e;
-}
-
-/*
-public JPGMetaSerializable getJPGStoredMeta(String filePath) throws FileNotFoundException, IOException, ClassNotFoundException {
-File f = new File(filePath);
-String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
-String nameFile = (f.getName() != null) ? f.getName().substring(0,f.getName().indexOf('.')) : "";
-ObjectInputStream ois = new ObjectInputStream( new FileInputStream(MetaPath+"/"+ nameFile));
-
-JPGMetaSerializable e = (JPGMetaSerializable) ois.readObject();
-return e;
-}
-*/
-/*
-public boolean isMp3MetaModifier(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ClassNotFoundException {
-File f = new File(filePath);
-Mp3Meta currentMp3 = new Mp3Meta(f);
-// We get the old Meta version
-Mp3MetaSerializable oldMeta = getMp3StoredMeta(filePath);
-// Reconstruct the old Mp3 File
-Mp3Meta oldMp3 = new Mp3Meta(f);
-oldMp3.setAllMetas(oldMeta);
-// Compare old and new tag
-return currentMp3.compareTag(oldMp3);
-}
     
         
         public void removeFile(String fileName) throws IOException{
@@ -229,7 +213,7 @@ return currentMp3.compareTag(oldMp3);
          FileHashSum hash = new FileHashSum();
          return hash.compareSha1sum(f, sha);
         }
-     /*
+     
 public boolean IsTagModifier(File f) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, ClassNotFoundException {
 String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
 File fichierMeta = new File("repertoirMeta") ;
@@ -245,7 +229,7 @@ return true;
 } else {
 return false;
 }
-}*/
+}
        
  /*       
         public String diff()throws IOException{
