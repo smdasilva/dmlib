@@ -1,3 +1,5 @@
+package src;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -16,12 +18,12 @@ public abstract class Metas {
 	public void Metadata(File f) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException {
 		    String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
 		    if(ext == ".mp3") {
-		    	this.m = new Mp3Meta(f);	
+		    	//this.m = new Mp3Meta(f);	
 		    	} 
 		    else if (ext == ".jpg") {
-			this.m = new JPGMeta(f);
+			//this.m = new JPGMeta(f);
 		}	
 	}
 	
-
+}
 	

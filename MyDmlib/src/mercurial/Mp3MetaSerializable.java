@@ -1,3 +1,5 @@
+package mercurial;
+
 import java.io.Serializable;
 
 import org.jaudiotagger.tag.FieldKey;

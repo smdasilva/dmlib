@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.util.zip.Adler32;
+import java.util.zip.CheckedInputStream;
 
 
 public class Util {
@@ -80,6 +82,21 @@ public class Util {
     }  
         return localSha1Sum;  
 	}  
+        
+        
+        public static long calculChecksum(String adresse_fichier) {
+   try {
+       FileInputStream fis = new FileInputStream(adresse_fichier);
+       CheckedInputStream cis = new CheckedInputStream(fis, new Adler32());
+       byte[] tempBuf = new byte[128];
+       while (cis.read(tempBuf) >= 0) {}
+       long checksum = cis.getChecksum().getValue();
+return checksum;       
+   } catch (IOException e) {
+    System.out.println("Error occuring during the Checksum calcul" );
+    return 0;
+   }
+}
 	
 	
 	public static void writeIntoFile(String repPath, String name, String content) throws FileNotFoundException, IOException {

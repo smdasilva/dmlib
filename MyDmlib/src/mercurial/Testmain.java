@@ -19,7 +19,7 @@ public class Testmain {
         //cl.Diff();
        //cl.FileAdded("/net/cremi/abndoye/espaces/travail/MYDEARTEST/client/tototototo"); 
         
-        cl.OutGoingFonc();
+       // cl.OutGoingFonc();
     }
     
 }
