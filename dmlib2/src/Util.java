@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Util {
@@ -28,17 +30,19 @@ public class Util {
 	}
 	
 	
-	public static void readLineFromFile(String path) throws IOException {
+	public static List<String> getContent(String path) throws IOException {
 		
 			InputStream ips=new FileInputStream(path); 
 			InputStreamReader ipsr=new InputStreamReader(ips);
 			BufferedReader br=new BufferedReader(ipsr);
 			
+			List<String> liste = new ArrayList<String>();
 			String ligne;
 			while ((ligne=br.readLine())!=null){
-				System.out.println(ligne);
+				liste.add(ligne);
 			}
 			br.close(); 
+			return liste;
 	}
 	
 	public static String getExt(String path) {
@@ -94,6 +98,8 @@ public class Util {
     clearFile(repPath+name);
     addLineIntoFile(repPath+name, content);
 }
+	
+
 				
 	
 }
