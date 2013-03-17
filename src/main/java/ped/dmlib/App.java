@@ -1,9 +1,5 @@
 package ped.dmlib;
 
-import java.io.File;
-
-import com.aragost.javahg.BaseRepository;
-import com.aragost.javahg.Repository;
 
 
 /**
@@ -43,7 +39,7 @@ public class App
         System.out.println(r2.getAddress() + " -------- " + r2.getURI("music"));
         
         
-        BaseRepository br;
+        /*BaseRepository br;
         File f = new File("/tmp");
         
         try {
@@ -52,6 +48,7 @@ public class App
         	br = Repository.create(f);
         }
     
-        br.close();
+        br.close();*/
+        
     }
 }

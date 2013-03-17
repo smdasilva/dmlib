@@ -3,7 +3,7 @@ package ped.dmlib;
 import java.io.IOException;
 
 public class ServerMain extends Thread {
-	HgServe server;
+	/*HgServe server;
 	
 	@Override
 	public void run() {
@@ -19,5 +19,5 @@ public class ServerMain extends Thread {
 		} catch (IOException e) {}
 		
 		catch (InterruptedException e) {}
-	}
+	}*/
 }

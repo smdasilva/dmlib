@@ -35,6 +35,10 @@ public class Repository {
 		
 		return uri.toString();
 	}
+	
+	public String getLibraryPath(String libraryName) {
+		return this.libraries.get(libraryName);
+	}
 
 	public String getName() {
 		return name;
