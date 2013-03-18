@@ -6,37 +6,26 @@ import java.awt.image.PixelGrabber;
 public class CompareJPG {
 
 
-		static boolean compareImageJPG(String f1,String f2) {
-			//String file1 = "/net/cremi/rbenojem/espaces/travail/v2.jpg";
-			//String file2 = "/net/cremi/rbenojem/espaces/travail/E990.jpg";
+		static int[] compareImageJPG(String f1) {
+			
 
 			Image image1 = Toolkit.getDefaultToolkit().getImage(f1);
-			Image image2 = Toolkit.getDefaultToolkit().getImage(f2);
-			boolean result= false;
+			
+			int[] result = null;
 
 			try {
 
 				PixelGrabber grab1 = new PixelGrabber(image1, 0, 0, -1, -1,false);
-				PixelGrabber grab2 = new PixelGrabber(image2, 0, 0, -1, -1,false);
-
-				int[] data1 = null;
+				
+				int[] data = null;
 				if (grab1.grabPixels()) {
 					int width = grab1.getWidth();
 					int height = grab1.getHeight();
-					data1 = new int[width * height];
-					data1 = (int[]) grab1.getPixels();
+					data = new int[width * height];
+					data = (int[]) grab1.getPixels();
 				}
-
-				int[] data2 = null;
-				if (grab2.grabPixels()) {
-					int width = grab2.getWidth();
-					int height = grab2.getHeight();
-					data2 = new int[width * height];
-					data2 = (int[]) grab2.getPixels();
-				}
-
-				//System.out.println("Pixels equal: "+ java.util.Arrays.equals(data1, data2));
-				result = java.util.Arrays.equals(data1, data2);
+				
+				result = data;
 
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
@@ -45,7 +34,7 @@ public class CompareJPG {
 		}
 
 		public static void main(String args[]) {
-			boolean res=compareImageJPG("/net/cremi/rbenojem/espaces/travail/v2.jpg","/net/cremi/rbenojem/espaces/travail/v2.jpg");
+			int[] res=compareImageJPG("/net/cremi/rbenojem/espaces/travail/ex.jpg");
 			System.out.println(res);
 		}
 		
