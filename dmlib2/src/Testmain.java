@@ -12,6 +12,11 @@ public class Testmain {
     
     public static void main(String[] args) throws IOException{
     	String repoPath = "/net/cremi/sdasilva/Documents/Mercurial/serveur";
+<<<<<<< HEAD
+=======
+    	
+    	// Create the .hg
+>>>>>>> 2f488ef... New
     	BaseRepository br;      
 		try {
 			br = Repository.open(new File(repoPath));
@@ -20,9 +25,18 @@ public class Testmain {
 		}    
 		br.close();
         
+<<<<<<< HEAD
     	
         Thread t = new MercurialServer(br, 8000);
         t.start();
+=======
+    	// Run the server
+        Thread t = new MercurialServer(br, 8000);
+        t.start();
+        
+        // Create the client
+       
+>>>>>>> 2f488ef... New
         //Client cl = new Client(repoPath,"http://cody:8000");
         //cl.RemoveFile("toto.txt");
         //cl.Diff();

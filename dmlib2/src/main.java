@@ -1,5 +1,3 @@
-package mercurial;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -63,7 +61,7 @@ public class main {
 		 
 		 
 		 
-		RepositoryConfiguration  REPO_CONF = makeRepoConf();
+		//RepositoryConfiguration  REPO_CONF = makeRepoConf();
 		//File dir = Files.createTempDir();
                 //Repository testRepository = Repository.create(REPO_CONF, dir);
                 /*File cloneDir = new File("/net/cremi/abndoye/espaces/travail/MYDEARTEST/client/");
@@ -74,7 +72,7 @@ public class main {
                  server.cloneMercurialRepository(cloneDir,"/net/cremi/abndoye/espaces/travail/MYDEARTEST/client/.hg/","http://reinhardt:8000");
                  
                  */
-                Repository repo = Repository.open(REPO_CONF, new File("/net/cremi/abndoye/espaces/travail/MYDEARTEST/client/"));
+            //    Repository repo = Repository.open(REPO_CONF, new File("/net/cremi/abndoye/espaces/travail/MYDEARTEST/client/"));
                 
 		/*AddCommand ac = new AddCommand(repo);
                 ac.execute();
@@ -83,8 +81,8 @@ public class main {
                 ci.execute();
                 PushCommand push = new PushCommand(repo);
                 push.on(repo).execute("http://voisin:8000");*/
-                PullCommand pull = new PullCommand(repo);
-                pull.execute("http://riemann:8000");
+              //  PullCommand pull = new PullCommand(repo);
+               // pull.execute("http://riemann:8000");
                 
          /*
 		 RepositoryConfiguration  REPO_CONF = makeRepoConf();
@@ -109,6 +107,8 @@ public class main {
 	 }
 	 */
 	 
+	 Client c = new Client("/net/cremi/sdasilva/Documents/Mercurial/REPO");
+	 c.addServer("http://bolognaise:8000");
 
 
  }
