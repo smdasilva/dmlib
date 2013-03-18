@@ -1,4 +1,4 @@
-package mercurial;
+package src;
 
 import com.aragost.javahg.BaseRepository;
 import java.io.IOException;

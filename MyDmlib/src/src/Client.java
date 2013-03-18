@@ -1,3 +1,5 @@
+package src;
+
 import com.aragost.javahg.BaseRepository;
 import com.aragost.javahg.Changeset;
 import com.aragost.javahg.Repository;
@@ -27,6 +29,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import net.sourceforge.jheader.JpegFormatException;
 
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
@@ -34,19 +37,14 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+import src.HgServer;
 
 
 public class Client {
     
-     String hgrcPath;
-     Repository repository;
-<<<<<<< HEAD
-     String MetaPath = "/net/cremi/sdasilva/Documents/dmlib/Client/Meta";
-     String HashPath = "/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/Hash";
-     String installationPath;
      
 
-    public Client(String installationPath) throws IOException {
+    /*public Client(String installationPath) throws IOException {
         this.installationPath = installationPath;      
         HgServer server = new HgServer(this.repository, 8000);
          try {
@@ -54,12 +52,12 @@ public class Client {
          System.out.println(p.waitFor());
          } catch (IOException e) {}
          catch (InterruptedException e) {}    
-    }
+    }*/
     
-=======
      HgServer server;
      String MetaPath = "/net/cremi/sdasilva/Documents/dmlib/Client/Meta";
      String HashPath = "/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/Hash";
+     Repository repository;
      String installationPath;
      String repositoryMetaName = "Meta";
      String repositoryHashName = "Hash";
@@ -96,9 +94,9 @@ public class Client {
         // modificationTreatment
     }
         
-        BaseRepository br;
+       /* BaseRepository br;
         File f = new File(installationPath);
-        this.repository = Repository.open(f);
+        this.repository = Repository.open(f);*/
         /*
         try {
          br = Repository.open(f);
@@ -111,17 +109,16 @@ public class Client {
         
         
         //this.server = new HgServer(this.repository, 8000);
-    }
+    //}
     
     public void addServer(String server) throws IOException {
      	pull(server);
     	//Rpull(server)
-     	RsyncController rc = new RsyncController("", "", "", "", "", "");
-     	rc.setInfos(server, dest, libraryName, *);
-    rc.set
+     	//RsyncController rc = new RsyncController("", "", "", "", "", "");
+     	//rc.setInfos(server, dest, libraryName, *);
     }
     
-    public void registerPC() {
+    public void registerPC() throws IOException {
     	ComputerRepository newRepo = new ComputerRepository(Util.getComputerFullName(), Util.myIP());
     	RepositoriesList rl = new RepositoriesList();
     	rl.load(this.repository.getDirectory().getAbsolutePath()+"/config.yaml");
@@ -172,15 +169,6 @@ public class Client {
        //modificationTreatment();
     //}
     
-    public void initialisation(String installationPath) throws IOException {
-        File hg = new File(installationPath+".hg");
-        if(!hg.exists()) {
-            String serveur = "localhsoyfgmlk";
-            File f = new File(installationPath);
-            cloneServer(f,serveur);
-        }
-        
-    }
 
 
     protected static RepositoryConfiguration makeRepoConf() {
@@ -195,22 +183,9 @@ return conf;
                  RepositoryConfiguration.DEFAULT.getEncoding());
             server.cloneMercurialRepository(rep,null,Urlserver);
 }
->>>>>>> 2f488ef... New
-    
-    public void addServer(String server) {
-        File hg = new File(this.installationPath+".hg");
-        if(!hg.exists()) {
-            cloneServer(this.repository.getDirectory(), server);
-        } else {
-           System.out.println("Modifier le .hg et rajouter un second serveur !");
-           
-        }
-<<<<<<< HEAD
-    }
-
+  
      
-=======
-
+/*
 public void addFile(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, FileNotFoundException, JpegFormatException {
             storeFileMeta(filePath);
             AddCommand ac = new AddCommand(this.repository);
@@ -219,7 +194,7 @@ public void addFile(String filePath) throws CannotReadException, IOException, Ta
             ci.message("Ajout du fichier" + filePath).user("admin");
             ci.execute();
         }
-
+*/
 public void add() {
 AddCommand ac = new AddCommand(this.repository);
          ac.execute();
@@ -250,7 +225,6 @@ public void generateFileHash(String filePath) throws IOException {
      
 
 
->>>>>>> 2f488ef... New
     
     public void initialisation(String installationPath) throws IOException {
         File hg = new File(installationPath+".hg");
@@ -260,26 +234,13 @@ public void generateFileHash(String filePath) throws IOException {
             cloneServer(f,serveur);
         }
         
-<<<<<<< HEAD
     }
 
 
-    protected static RepositoryConfiguration makeRepoConf() {
-RepositoryConfiguration conf = new RepositoryConfiguration();
-conf.setCachePolicy(CachePolicy.WEAK);
-return conf;
-}
-    
-    public void cloneServer(File rep, String Urlserver) {
-            Server server = new Server(
-                 RepositoryConfiguration.DEFAULT.getHgBin(),
-                 RepositoryConfiguration.DEFAULT.getEncoding());
-            server.cloneMercurialRepository(rep,null,Urlserver);
-}
-    
+
       
       
-=======
+
         public void changeFile(String filePath, String nameFile) throws IOException{
             CommitCommand ci = new CommitCommand(this.repository);
             ci.message("Ajout du fichier" + filePath).user("userrrr");
@@ -291,28 +252,28 @@ return conf;
             push.on(this.repository).execute("http://cody:8000");
         }
         
-        public boolean isFileModified(File f, String sha)
+     /*   public boolean isFileModified(File f, String sha)
         {
          FileHashSum hash = new FileHashSum();
          return hash.compareSha1sum(f, sha);
         }
-     
-public boolean IsTagModifier(File f) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, ClassNotFoundException {
-String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
-File fichierMeta = new File("repertoirMeta") ;
-ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fichierMeta)) ;
-if (ext == ".mp3") {
-Mp3Meta metaStorage = (Mp3Meta)ois.readObject() ;
-Mp3Meta metasFichier = new Mp3Meta(f);
-return metasFichier.compareTag(metaStorage);
-} else if (ext == ".jpg") {
-JPGMeta metaStorage = (JPGMeta)ois.readObject() ;
-JPGMeta metasFichier = new JPGMeta(f);
-return true;
-} else {
-return false;
-}
-}
+
+    public boolean IsTagModifier(File f) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, ClassNotFoundException {
+    String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
+    File fichierMeta = new File("repertoirMeta") ;
+    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fichierMeta)) ;
+    if (ext == ".mp3") {
+    Mp3Meta metaStorage = (Mp3Meta)ois.readObject() ;
+    Mp3Meta metasFichier = new Mp3Meta(f);
+    return metasFichier.compareTag(metaStorage);
+    } else if (ext == ".jpg") {
+    JPGMeta metaStorage = (JPGMeta)ois.readObject() ;
+    JPGMeta metasFichier = new JPGMeta(f);
+    return true;
+    } else {
+    return false;
+    }
+    }*/
        
  /*       
         public String diff()throws IOException{
@@ -382,5 +343,4 @@ return false;
          }
         }
        */
->>>>>>> 2f488ef... New
 }

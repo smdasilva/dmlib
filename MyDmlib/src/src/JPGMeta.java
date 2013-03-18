@@ -1,3 +1,5 @@
+package src;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -31,10 +33,10 @@ public class JPGMeta {
 		return directory.getDescription(directory.TAG_APERTURE);
 	}
 	
-	public void test() {
+	/*public void test() {
 		 metadata.System.err.println();
 		
-	}
+	}*/
 	
 	
 	
