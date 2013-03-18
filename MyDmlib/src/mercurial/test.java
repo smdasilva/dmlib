@@ -47,7 +47,8 @@ public class test {
 
 
                 
-                Client c = new Client("/net/cremi/abndoye/Desktop/espaces/travail/MYSUPATEST/Test1");
+                Client c = new Client("/net/cremi/abndoye/Desktop/espaces/travail/MYSUPATEST/ultimetest");
+                c.addServer("http://rudel:8000");
                 
                 
                 

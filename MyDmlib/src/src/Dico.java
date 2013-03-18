@@ -117,11 +117,11 @@ public class Dico {
 		return metas;
 	}
 	
-	/*public JPGMeta getJPGMetas(int id) throws ImageProcessingException, IOException {
+	public JPGMeta getJPGMetas(int id) throws ImageProcessingException, IOException {
 		File file = new File(this.getPath(id));
 		JPGMeta metas = new JPGMeta(file);	
 		return metas;
-	}*/
+	}
 	
 	
 }

@@ -38,16 +38,6 @@ init(repository, 8000);
 private void init(Repository repository, int port) {
 this.repository = repository;
 this.port = port;
-
-    BaseRepository br;      
-  try {
-    br = Repository.open(repository.getDirectory());
-        } catch (IllegalArgumentException iae) {
-         br = Repository.create(repository.getDirectory());
-        }    
-        br.close();
-
-
 }
 
 public int getPort() {
