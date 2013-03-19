@@ -6,6 +6,10 @@ public class RsyncController {
 	private String destPath;
 	private String destUser;
 	private String destHost;
+	
+	public RsyncController() {
+		clearInfos();
+	}
 
 	public RsyncController(String srcPath, String srcUser, String srcHost,
 			String destPath, String destUser, String destHost) {
@@ -47,8 +51,8 @@ public class RsyncController {
 	}
 
 	private void clearInfos() {
-		this.srcHost = this.srcPath = this.srcUser = null;
-		this.destHost = this.destPath = this.destUser = null;
+		this.srcHost = this.srcPath = this.srcUser = "";
+		this.destHost = this.destPath = this.destUser = "";
 	}
 
 	public void execute() {
