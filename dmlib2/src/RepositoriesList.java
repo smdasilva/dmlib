@@ -7,17 +7,18 @@ import java.util.List;
 import org.yaml.snakeyaml.Yaml;
 
 public class RepositoriesList {
-	private List<ComputerRepository> repositories = new ArrayList<ComputerRepository>();
+	private Map<String, ComputerRepository> repositoriesPerName = new HashMap<String, ComputerRepository>();
 	
 	public void addRepository(ComputerRepository r) {
 		repositories.add(r);
+		
 	}
 	
 	public void removeRepository(ComputerRepository r) {
 		repositories.remove(r);
 	}
 	
-	public List<ComputerRepository> getRepositories() {
+	public Map<String, ComputerRepository> getRepositories() {
 		return repositories;
 	}
 
