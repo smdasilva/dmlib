@@ -1,3 +1,6 @@
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.image.PixelGrabber;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,6 +23,15 @@ import java.util.List;
 public class Util {
 
 	public static void addLineIntoFile(String path, String value) throws IOException {
+		File repository = new File(path);
+		BufferedWriter w = new BufferedWriter(new FileWriter(path, true));
+		w.write(value + "\r\n");
+		w.flush();
+		w.close();
+	}
+	
+	
+	public static void addLineIntoFile(String path, int value) throws IOException {
 		File repository = new File(path);
 		BufferedWriter w = new BufferedWriter(new FileWriter(path, true));
 		w.write(value + "\r\n");
@@ -122,6 +134,27 @@ public class Util {
 			e.printStackTrace(); 
 			return "erreur lors de l'acquisition de l'IP";
 		}
+	}
+	
+	
+	public static int[] extractPixel(String f1) {
+		Image image1 = Toolkit.getDefaultToolkit().getImage(f1);
+		int[] result = null;
+		try {
+			PixelGrabber grab1 = new PixelGrabber(image1, 0, 0, -1, -1,false);
+			int[] data = null;
+			if (grab1.grabPixels()) {
+				int width = grab1.getWidth();
+				int height = grab1.getHeight();
+				data = new int[width * height];
+				data = (int[]) grab1.getPixels();
+			}
+			result = data;
+
+		} catch (InterruptedException e1) {
+			System.out.println("Fail compareImageJPG()");
+		}
+		return result;
 	}
 
 

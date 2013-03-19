@@ -1,5 +1,3 @@
-package src;
-
 import com.aragost.javahg.BaseRepository;
 import com.aragost.javahg.Changeset;
 import com.aragost.javahg.Repository;
@@ -27,9 +25,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import net.sourceforge.jheader.JpegFormatException;
+
 
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
@@ -37,7 +36,6 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
-import src.HgServer;
 
 
 public class Client {
@@ -92,24 +90,24 @@ public class Client {
         //}
         
         // modificationTreatment
-    }
+    
         
-       /* BaseRepository br;
-        File f = new File(installationPath);
-        this.repository = Repository.open(f);*/
+        //BaseRepository br;
+        //File f = new File(installationPath);
+        //this.repository = Repository.open(f);
         /*
         try {
          br = Repository.open(f);
         } catch (IllegalArgumentException iae) {
          br = Repository.create(f);
-        }    
-        br.close();
-        */
+        }*/    
+        //br.close();
+        
         
         
         
         //this.server = new HgServer(this.repository, 8000);
-    //}
+    }
     
     public void addServer(String server) throws IOException {
      	pull(server);
@@ -132,7 +130,7 @@ public class Client {
     }
     
     public void RepositoryUpdate(String repository) throws IOException, ImageProcessingException, CannotReadException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
-    	List<String> listFile = new ArrayList<String>();
+    	List<String> listFile = new ArrayList<String>();                                                                    
     	for(String file : listFile) {
     		generateFileHash(file);
     		generateFileMeta(file);
@@ -200,27 +198,47 @@ AddCommand ac = new AddCommand(this.repository);
          ac.execute();
 }
 
+public String getDirectoryFile(String repositoryName, String fileAbsolutePath)
+{
+	String path[] = fileAbsolutePath.split(repositoryName);
+	return repositoryName+path[1];
+}
 
-public void generateFileMeta(String filePath) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, FileNotFoundException {
-		File f = new File(filePath);
-        String nameFile = (f.getName() != null) ? f.getName().substring(0,f.getName().indexOf('.')) : "";
-        String ext = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
-        String repPath = f.getCanonicalPath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(f.getName(), "");
-        
-        if (ext.equals(".mp3")) {
+
+public void generateFileMeta(String srcFile, String repositoryName ) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, FileNotFoundException {
+		File f = new File(srcFile);
+        String name = f.getName().replace(".mp3", ".meta");  
+        String repPath = this.installationPath+getDirectoryFile(repositoryName, srcFile);
+        String destDirectory = repPath.replace(f.getName(), "");
+
+        if (Util.getExt(srcFile).equals(".mp3")) {
         Mp3Meta fileMetas = new Mp3Meta(f);
-        fileMetas.saveTagToFile(repPath);
-        } else if (ext == ".jpg") {
-         
-        }
+        fileMetas.saveTagToFile(destDirectory,name);}
+       // } else if (ext == ".jpg") {
+       // }
 }
 
 public void generateFileHash(String filePath) throws IOException {
-     String hash = "Méthode Ramah";
-     File f = new File(filePath);
+     int[] hash = Util.extractPixel(filePath);
+     String result = "";
+     int t = 0;
+     for(int value : hash) {
+    	 
+    	 //result = result.concat(String.valueOf(value));
+    	 //System.out.println(result);
+    	 
+    	//Util.writeIntoFile("/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/", "TOTO", String.valueOf(value));
+    	Util.addLineIntoFile("/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/TOTO", value);
+    	 
+     }
+ 
+     System.out.println(t);
+     //System.out.println(result);
+    // System.out.println(hash[100]);
+     /*File f = new File(filePath);
      String nameFile = (f.getName() != null) ? f.getName().substring(0,f.getName().lastIndexOf('.')) : "";
      String repPath = f.getCanonicalPath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(f.getName(), "");
-     Util.writeIntoFile(""+this.repositoryHashName+repPath, nameFile+".hash",hash);
+     Util.writeIntoFile(""+this.repositoryHashName+repPath, nameFile+".hash",hash);*/
 }
      
 

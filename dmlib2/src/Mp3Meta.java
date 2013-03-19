@@ -145,12 +145,11 @@ public class Mp3Meta implements Serializable {
 			save();
 	}
 	
-	public void saveTagToFile(String path) throws IOException {	
-		Util.clearFile(path);
-		
+	public void saveTagToFile(String path, String name) throws IOException {
+	
 		for(FieldKey fk : FieldKey.values()) {
 			if (tag.getFirst(fk) != "") {
-			Util.addLineIntoFile(path, fk +"|"+ tag.getFirst(fk));
+			 Util.writeIntoFile(path,name ,fk +"|"+ tag.getFirst(fk));
 			}
 		}	
 	}

@@ -4,6 +4,11 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.TagException;
+
 import com.aragost.javahg.Repository;
 import com.aragost.javahg.RepositoryConfiguration;
 import com.aragost.javahg.RepositoryConfiguration.CachePolicy;
@@ -17,6 +22,7 @@ import com.aragost.javahg.commands.flags.CloneCommandFlags;
 import com.aragost.javahg.internals.AbstractCommand;
 import com.aragost.javahg.internals.Server;
 import com.aragost.javahg.internals.Utils;
+import com.drew.imaging.ImageProcessingException;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
@@ -30,7 +36,7 @@ public class main {
 	    }
     
     
- public static void main(String[] args) throws IOException {
+ public static void main(String[] args) throws IOException, ImageProcessingException, CannotReadException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
 		 //SimpleTestServer serveur = new SimpleTestServer(new File("/net/cremi/sdasilva/Documents/dmlib/dmlib.git/serveur/"));
 		 //serveur.start();
 		 /*
@@ -107,9 +113,12 @@ public class main {
 	 }
 	 */
 	 
-	 Client c = new Client("/net/cremi/sdasilva/Documents/Mercurial/REPO");
-	 c.addServer("http://bolognaise:8000");
-
+	 Client c = new Client("/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/");
+	 //c.addServer("http://bolognaise:8000");
+     //c.generateFileMeta("/net/cremi/sdasilva/Musique/Test/musique.mp3", "Musique");
+     c.generateFileHash("/net/cremi/sdasilva/Images/perso/Shaun.jpg");
+	 //Util.writeIntoFile("/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/Musique/Test/", "musique", "content");
+	 //File f = new File("/net/cremi/sdasilva/Musique/Test/musique.mp3");
 
  }
  }
