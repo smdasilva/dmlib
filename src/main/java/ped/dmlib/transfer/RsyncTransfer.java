@@ -1,9 +1,11 @@
 package ped.dmlib.transfer;
 
-import java.io.IOException;
-
 import ped.dmlib.filemanagement.ComputerRepository;
 
+/**
+ * Using rsync to transfer binary files
+ *
+ */
 public class RsyncTransfer implements BinaryFileTransfer {
 	private ComputerRepository local;
 	private ComputerRepository remote;
@@ -16,24 +18,35 @@ public class RsyncTransfer implements BinaryFileTransfer {
 		this.remote = remote;
 	}
 
-	public void pull(String libraryName, String filePath) {
+	public boolean pull(String libraryName, String filePath) {
 		this.constructPaths(remote.getLibraryPath(libraryName), 
-				local.getLibraryPath(libraryName), 
-				filePath);
+							local.getLibraryPath(libraryName), 
+							filePath);
 		
-		//execute();
+		try {
+			execute();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
-	public void push(String libraryName, String filePath) {
+	public boolean push(String libraryName, String filePath) {
 		this.constructPaths(local.getLibraryPath(libraryName), 
-				remote.getLibraryPath(libraryName), 
-				filePath);
+							remote.getLibraryPath(libraryName), 
+							filePath);
 		
-		//execute();
+		try {
+			execute();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	private void constructPaths(String srcPathLibrary, String destPathLibrary, 
 			String filePath) {
+		
 		StringBuilder srcPathTmp = new StringBuilder(srcPathLibrary);
 		StringBuilder destPathTmp = new StringBuilder(destPathLibrary);
 		

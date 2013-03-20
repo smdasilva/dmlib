@@ -3,14 +3,10 @@ package ped.dmlib.metadata;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Iterator;
 
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -18,13 +14,11 @@ import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
-import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldDataInvalidException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.KeyNotFoundException;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
-import org.jaudiotagger.tag.TagField;
 
 import ped.dmlib.Util;
 
@@ -36,12 +30,13 @@ public class Mp3Meta implements Serializable {
 	AudioFile file;
 	Tag tag;
 
-	public Mp3Meta(File f) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
+	public Mp3Meta(File f) throws CannotReadException, IOException, TagException, 
+								ReadOnlyFileException, InvalidAudioFrameException {
 		file = AudioFileIO.read(f);
 		this.tag = file.getTag();
 	}
 
-	/* Getter to access Metadata file */
+	
 	public Tag getTag() {
 		return this.tag;
 	}
@@ -85,9 +80,7 @@ public class Mp3Meta implements Serializable {
 	public String getTotalTrack() {
 		return tag.getFirst(FieldKey.TRACK_TOTAL);
 	}
-
-
-	/* Setter to modify the Metadata file */
+	
 
 	public void setArtist(String value) throws KeyNotFoundException, FieldDataInvalidException {
 		tag.setField(FieldKey.ARTIST,value);
@@ -135,13 +128,14 @@ public class Mp3Meta implements Serializable {
 		this.file.commit();
 	}
 
-	public void deleteMeta() throws CannotReadException, CannotWriteException, KeyNotFoundException, FieldDataInvalidException {
+	public void deleteMeta() throws CannotReadException, CannotWriteException,
+								KeyNotFoundException, FieldDataInvalidException {
 		//AudioFileIO.delete(this.file);
 		for(FieldKey fk : FieldKey.values()) {
 
 			if(fk != FieldKey.COVER_ART && fk != FieldKey.ENGINEER && 
-					fk != FieldKey.PRODUCER && fk != FieldKey.ARRANGER && fk != 
-					FieldKey.DJMIXER && fk != FieldKey.MIXER) {
+					fk != FieldKey.PRODUCER && fk != FieldKey.ARRANGER && 
+					fk != FieldKey.DJMIXER && fk != FieldKey.MIXER) {
 				try { 
 					tag.setField(fk, "1"); 
 				} catch(Exception e) {
@@ -161,7 +155,8 @@ public class Mp3Meta implements Serializable {
 		}	
 	}
 
-	public void saveTagFromFile(String path) throws IOException, KeyNotFoundException, FieldDataInvalidException, CannotWriteException {
+	public void saveTagFromFile(String path) throws IOException, KeyNotFoundException,
+												FieldDataInvalidException, CannotWriteException {
 		InputStream ips=new FileInputStream(path); 
 		InputStreamReader ipsr=new InputStreamReader(ips);
 		BufferedReader br=new BufferedReader(ipsr);

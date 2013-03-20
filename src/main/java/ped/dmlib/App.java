@@ -1,5 +1,7 @@
 package ped.dmlib;
 
+import ped.dmlib.connexion.MercurialServer;
+
 /**
  * Hello world!
  *
