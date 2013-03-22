@@ -3,6 +3,7 @@ package ped.dmlib;
 import java.io.File;
 import java.io.IOException;
 
+import ped.dmlib.connexion.Client;
 import ped.dmlib.connexion.MercurialServer;
 
 import com.aragost.javahg.BaseRepository;
@@ -15,7 +16,7 @@ import com.aragost.javahg.Repository;
 public class Testmain {
     
     public static void main(String[] args) throws IOException{
-    	String repoPath = "/net/cremi/sdasilva/Documents/Mercurial/serveur";
+    	/*String repoPath = "/net/cremi/sdasilva/Documents/Mercurial/serveur";
 
     	// Create the .hg
 
@@ -30,7 +31,7 @@ public class Testmain {
 
     	// Run the server
         Thread t = new MercurialServer(br, 8000);
-        t.start();
+        t.start();*/
         
         // Create the client
         //Client cl = new Client(repoPath,"http://cody:8000");
@@ -39,6 +40,9 @@ public class Testmain {
        //cl.FileAdded("/net/cremi/abndoye/espaces/travail/MYDEARTEST/client/tototototo"); 
         
         //cl.OutGoingFonc();
+        Client c = new Client("/net/cremi/bnoleau/espaces/travail/project/serveur1/hg/");
+        c.pull("http://localhost:8050");
+       c.update();
         
     }
     

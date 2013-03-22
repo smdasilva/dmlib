@@ -21,7 +21,6 @@ public class MercurialServer extends Thread {
 			Process p = server.execute();
 			p.waitFor();
 		} catch (IOException e) {}
-
 		catch (InterruptedException e) {}
 	}
 }

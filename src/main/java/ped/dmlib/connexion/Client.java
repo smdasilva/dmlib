@@ -11,11 +11,15 @@ import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
 
+import ped.dmlib.OldRsyncController;
 import ped.dmlib.Util;
 import ped.dmlib.filemanagement.ComputerRepositoriesList;
 import ped.dmlib.filemanagement.ComputerRepository;
 import ped.dmlib.metadata.Mp3Meta;
+import ped.dmlib.transfer.BinaryFileTransfer;
+import ped.dmlib.transfer.RsyncTransfer;
 
+import com.aragost.javahg.BaseRepository;
 import com.aragost.javahg.Changeset;
 import com.aragost.javahg.Repository;
 import com.aragost.javahg.RepositoryConfiguration;
@@ -24,6 +28,7 @@ import com.aragost.javahg.commands.AddCommand;
 import com.aragost.javahg.commands.CommitCommand;
 import com.aragost.javahg.commands.PullCommand;
 import com.aragost.javahg.commands.PushCommand;
+import com.aragost.javahg.commands.UpdateCommand;
 import com.aragost.javahg.internals.Server;
 import com.drew.imaging.ImageProcessingException;
 
@@ -82,16 +87,16 @@ public class Client {
 		// modificationTreatment
 
 
-		//BaseRepository br;
-		//File f = new File(installationPath);
-		//this.repository = Repository.open(f);
-		/*
+		BaseRepository br;
+		File f = new File(installationPath);
+		this.repository = Repository.open(f);
+		
         try {
          br = Repository.open(f);
         } catch (IllegalArgumentException iae) {
          br = Repository.create(f);
-        }*/    
-		//br.close();
+        }    
+		br.close();
 
 
 
@@ -100,11 +105,33 @@ public class Client {
 	}
 
 	public void addServer(String server) throws IOException {
+		
 		pull(server);
+		System.out.println("pull");
+		update();
 		//Rpull(server)
 		//RsyncController rc = new RsyncController("", "", "", "", "", "");
 		//rc.setInfos(server, dest, libraryName, *);
+		
+		ComputerRepository local = new ComputerRepository();
+		ComputerRepository remote = new ComputerRepository();
+		remote.setAddress(server);
+		
+		String test = "/net/cremi/bnoleau/espaces/travail/project/";
+		
+		
+		local.addLibrary("images", test + "serveur1/bin/image");
+		local.addLibrary("musics", test + "serveur1/bin/music");
+		
+		remote.addLibrary("images", test + "serveur2/bin/image");
+		remote.addLibrary("musics", test + "serveur2/bin/music");
+		
+		BinaryFileTransfer bft = new RsyncTransfer(local, remote);
+		//bft.pull("images", null);
+		bft.pull("musics", "*");
 	}
+	
+	
 
 	public void registerPC() throws IOException {
 		ComputerRepository newRepo = new ComputerRepository(Util.getComputerFullName(), Util.myIP());
@@ -112,6 +139,15 @@ public class Client {
 		rl.load(this.repository.getDirectory().getAbsolutePath()+"/config.yaml");
 		rl.addRepository(newRepo);
 		rl.save(new File(this.repository.getDirectory().getAbsolutePath()+"config.yaml"));
+	}
+	
+	public void addRepository(String path) throws ImageProcessingException, FileNotFoundException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
+		String name = "zik.mp3";
+		String[] split = path.split("/");
+		String repoName = split[split.length-1];
+		generateFileMeta(path+name,repoName);
+		add();
+		commit(path+name);
 	}
 
 	public List<Changeset> pull(String source) throws IOException {
@@ -186,6 +222,17 @@ public void addFile(String filePath) throws CannotReadException, IOException, Ta
 	public void add() {
 		AddCommand ac = new AddCommand(this.repository);
 		ac.execute();
+	}
+	
+	public void commit(String filePath) {
+		 CommitCommand ci = new CommitCommand(this.repository);
+         ci.message("Ajout du fichier" + filePath).user("admin");
+         ci.execute();
+     }
+
+	public void update() throws IOException {
+		UpdateCommand up = new UpdateCommand(this.repository);
+		up.execute();
 	}
 
 	public String getDirectoryFile(String repositoryName, String fileAbsolutePath)

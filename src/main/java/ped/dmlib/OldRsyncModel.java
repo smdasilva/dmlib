@@ -8,6 +8,8 @@ public class OldRsyncModel {
 		Process p = pb.start();
 		int val = p.waitFor();
 
+		System.out.println("Val = " + val);
+		
 		if (val != 0)
 			throw new Exception("Exception during RSync; return code = " + val);
 	}

@@ -52,6 +52,8 @@ public class OldRsyncController {
 		
 		this.destHost = dest.getAddress();
 		this.destPath = dest.getLibraryPath(libraryName) + filePath;
+		
+		
 	}
 
 	private void clearInfos() {
@@ -79,8 +81,11 @@ public class OldRsyncController {
 		tmpdest += destPath;
 
 		try {
+			System.out.println(tmpsrc);
+			System.out.println(tmpdest);
 			OldRsyncModel.execute(tmpsrc, tmpdest);
 		} catch (Exception e) {
+			System.out.println("Exception during rsync 2");
 			e.printStackTrace();
 		}
 	}

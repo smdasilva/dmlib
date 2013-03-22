@@ -1,5 +1,8 @@
 package ped.dmlib.transfer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ped.dmlib.filemanagement.ComputerRepository;
 
 /**
@@ -27,6 +30,7 @@ public class RsyncTransfer implements BinaryFileTransfer {
 			execute();
 			return true;
 		} catch (Exception e) {
+			System.out.println("Exception during rsync");
 			return false;
 		}
 	}
@@ -53,10 +57,12 @@ public class RsyncTransfer implements BinaryFileTransfer {
 		if(!srcPathLibrary.endsWith("/"))
 			srcPathTmp.append("/");
 		
+		int toto;
 		if(filePath.equals("") || 
 				filePath.equals("*") || 
 				filePath == null)
-			srcPathTmp.append("*");
+			//srcPathTmp.append("*");
+			toto = 3;
 		else {
 			srcPathTmp.append(filePath);
 			destPathTmp.append(filePath);
@@ -70,7 +76,8 @@ public class RsyncTransfer implements BinaryFileTransfer {
 	}
 	
 	private void execute() throws Exception {
-		String cmd[] = new String[]{"rsync", "-az", this.srcPath, this.destPath};
+		String cmd[] = new String[]{"rsync", "-arv", this.srcPath, this.destPath};
+
 		ProcessBuilder pb = new ProcessBuilder(cmd);
 		Process p = pb.start();
 		int val = p.waitFor();
