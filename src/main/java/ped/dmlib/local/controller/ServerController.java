@@ -34,7 +34,7 @@ public class ServerController
         }   
 		br1.close();
 		
-        Thread t1 = new MercurialServer(br1, 8030);
+        Thread t1 = new MercurialServer(br1, 8000);
         t1.start();
         
 		//Lancement client
