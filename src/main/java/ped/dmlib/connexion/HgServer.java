@@ -63,8 +63,8 @@ public class HgServer {
 	public Process execute() throws IOException {
 		Runtime runtime = Runtime.getRuntime();
 		
-		String[] cmd = new String[]{"hg","--config", "web.allow_push=*", 
-				"--config", "web.push_ssl=False", 
+		String[] cmd = new String[]{"hg","--config", "web.push_ssl=False",  
+				"--config", "web.allow_push=*",
 				"serve", "-p " + port};
 
 		LOG.info("Start hg serve in " + repository.getDirectory() + " on port " + this.port);
