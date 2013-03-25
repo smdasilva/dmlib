@@ -9,6 +9,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+@SuppressWarnings("restriction")
 public class FactoryRepo {
 	private Repo localRepository = null;
 	private List<Repo> remoteRepositories = new ArrayList<Repo>();
@@ -40,9 +41,17 @@ public class FactoryRepo {
 	public void addRemoteRepo(Repo repo) {
 		this.remoteRepositories.add(repo);
 	}
+	
+	private void createArbo(String path) {
+		File dir = new File(path);
+		dir.mkdirs();
+	}
 
 	public void loadRepositories() {
-		String pathLocal = installationPath + configPah + "local.repo"; 
+		createArbo(installationPath + configPah);
+		createArbo(installationPath + remoteRepoPah);
+		
+		String pathLocal = installationPath + configPah + "local.repo";
 		File fileLocal = new File(pathLocal);
 		
 		if(fileLocal.exists())
@@ -92,6 +101,7 @@ public class FactoryRepo {
 		saveRepository(this.localRepository, fileRepoToSave);
 	}
 
+	
 	private void saveRepository(Repo repoToSave, File fileRepo) {
 		JAXBContext context;
 		try {
@@ -104,4 +114,11 @@ public class FactoryRepo {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "FactoryRepo [localRepository=" + localRepository
+				+ ",\n remoteRepositories=" + remoteRepositories + "]";
+	}
+
+	
 }

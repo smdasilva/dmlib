@@ -23,7 +23,7 @@ public class App
 {
     public static void main( String[] args ) throws IOException, ImageProcessingException, CannotReadException, TagException, ReadOnlyFileException, InvalidAudioFrameException, InterruptedException
     {
-    	String test = "/net/cremi/bnoleau/espaces/travail/project/";
+    	String test = ".";
     	
     	BaseRepository br1;
     	String serveur1Path = test + "serveur1/hg/";
