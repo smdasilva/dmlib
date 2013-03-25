@@ -44,6 +44,7 @@ public class MyButtonListener implements ActionListener
 					//File rep = new File(System.getProperty("user.home")+"/Shared Media Center/"+fileChooser.getSelectedFile().getName());
 					File rep = new File(fileChooser.getSelectedFile().getAbsolutePath());
 					main.getTreePanel().refreshTreePanel(rep);
+					main.getServerController().addRepository(rep);
 				/*} catch (IOException e1) {
 					e1.printStackTrace();
 				}*/

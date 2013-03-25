@@ -63,6 +63,9 @@ public class MainPanel extends JPanel
 	public LocalController getLocalController() {
 		return this.myLocalController;
 	}
+	public ServerController getServerController() {
+		return this.myServController;
+	}
 	public FileExplorerPanel getFileExpPanel() {
 		return this.filexpPanel;
 	}

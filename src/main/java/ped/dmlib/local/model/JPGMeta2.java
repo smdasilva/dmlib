@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.SortedMap;
 
+import ped.dmlib.Util;
+
 import net.sourceforge.jheader.App1Header;
 import net.sourceforge.jheader.App1Header.Tag;
 import net.sourceforge.jheader.ExifFormatException;

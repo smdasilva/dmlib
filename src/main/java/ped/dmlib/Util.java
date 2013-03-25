@@ -30,6 +30,7 @@ public class Util {
 		w.close();
 	}
 
+
 	public static void addLineIntoFile(String path, int value) throws IOException {
 		File repository = new File(path);
 		BufferedWriter w = new BufferedWriter(new FileWriter(path, true));
@@ -42,18 +43,19 @@ public class Util {
 		new FileWriter(new File(path)).close();
 	}
 
+
 	public static List<String> getContent(String path) throws IOException {
+
 		InputStream ips=new FileInputStream(path); 
 		InputStreamReader ipsr=new InputStreamReader(ips);
 		BufferedReader br=new BufferedReader(ipsr);
+
 		List<String> liste = new ArrayList<String>();
 		String ligne;
-		
-		while ((ligne=br.readLine())!=null) {
+		while ((ligne=br.readLine())!=null){
 			liste.add(ligne);
 		}
-		br.close();
-		
+		br.close(); 
 		return liste;
 	}
 
@@ -75,9 +77,8 @@ public class Util {
 
 	public static String sha1sum(String path){
 		File file = new File(path);
-		String localSha1Sum = null;
-		
-		if (file.exists() && file.isFile() && file.canRead()) {  
+		String localSha1Sum = null;  
+		if (file.exists() && file.isFile() && file.canRead()){  
 			try {  
 				MessageDigest md = MessageDigest.getInstance("SHA-1");  
 				DigestInputStream dis = new DigestInputStream(new FileInputStream(file), md);  
@@ -93,55 +94,50 @@ public class Util {
 				ex.printStackTrace();  
 			}  
 		} else {  
-			System.err.println("No file found: "+file.getAbsolutePath()); 
-		} 
-		
+			System.out.println("impossible de trouver le fichier : "+file.getAbsolutePath());  
+		}  
 		return localSha1Sum;  
 	}  
 
 
-	public static void writeIntoFile(String repPath, String name, String content) 
-			throws FileNotFoundException, IOException {
+	public static void writeIntoFile(String repPath, String name, String content) throws FileNotFoundException, IOException {
+
 		File rep = new File(repPath);  
 
-		if (!rep.exists()) { 
+		if (!rep.exists())
+		{ 
 			rep.mkdirs(); 
 		}
-
-		clearFile(repPath+name);
 		addLineIntoFile(repPath+name, content);
 	}
 
 	public static String getComputerFullName() {
 		String hostName = null;
-		
 		try {
 			final InetAddress addr = InetAddress.getLocalHost();
 			hostName = new String(addr.getHostName());
 		} catch(final Exception e) {
-			
-		}
-		
+		}//end try
 		return hostName;
-	}
+	}//end getComputerFullName
 
 	public static String myIP() {
 		try 
 		{ 
 			InetAddress thisIp = InetAddress.getLocalHost(); 
-			
 			return thisIp.getHostAddress(); 
-		} catch(UnknownHostException e)	{ 
+		} 
+		catch(UnknownHostException e) 
+		{ 
 			e.printStackTrace(); 
-			
 			return "erreur lors de l'acquisition de l'IP";
 		}
 	}
 
+
 	public static int[] extractPixel(String f1) {
 		Image image1 = Toolkit.getDefaultToolkit().getImage(f1);
 		int[] result = null;
-		
 		try {
 			PixelGrabber grab1 = new PixelGrabber(image1, 0, 0, -1, -1,false);
 			int[] data = null;
@@ -154,9 +150,10 @@ public class Util {
 			result = data;
 
 		} catch (InterruptedException e1) {
-			System.err.println("Fail compareImageJPG()");
+			System.out.println("Fail compareImageJPG()");
 		}
-		
 		return result;
 	}
+
+
 }

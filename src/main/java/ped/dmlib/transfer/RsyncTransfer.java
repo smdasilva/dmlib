@@ -1,22 +1,21 @@
+
 package ped.dmlib.transfer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ped.dmlib.filemanagement.ComputerRepository;
+import ped.dmlib.temp.Repo;
 
 /**
  * Using rsync to transfer binary files
  *
  */
 public class RsyncTransfer implements BinaryFileTransfer {
-	private ComputerRepository local;
-	private ComputerRepository remote;
+	private Repo local;
+	private Repo remote;
 	
 	private String srcPath;
 	private String destPath;
 
-	public RsyncTransfer(ComputerRepository local, ComputerRepository remote) {
+	public RsyncTransfer(Repo local, Repo remote) {
 		this.local = local;
 		this.remote = remote;
 	}
@@ -57,12 +56,9 @@ public class RsyncTransfer implements BinaryFileTransfer {
 		if(!srcPathLibrary.endsWith("/"))
 			srcPathTmp.append("/");
 		
-		int toto;
 		if(filePath.equals("") || 
 				filePath.equals("*") || 
-				filePath == null)
-			//srcPathTmp.append("*");
-			toto = 3;
+				filePath == null) {}
 		else {
 			srcPathTmp.append(filePath);
 			destPathTmp.append(filePath);

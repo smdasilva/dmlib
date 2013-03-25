@@ -1,10 +1,13 @@
 package ped.dmlib.temp;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import ped.dmlib.Util;
 
 
 @XmlRootElement
@@ -15,13 +18,40 @@ public class Repo {
 	
 	private Map<String, String> librariesPaths;
 	
-	public Repo() {}
+	public Repo() {
+		this.init(Util.getComputerFullName(), Util.myIP(), 8000);
+	}
 
 	public Repo(String name, String address, int port) {
+		this.init(name, address, port);
+	}
+	
+	private void init (String name, String address, int port) {
 		this.name = name;
 		this.address = address;
 		this.port = port;
 		this.librariesPaths  = new TreeMap<String, String>();
+	}
+	
+	public String getURI(String libraryName) {
+		StringBuilder uri = null;
+		
+		if(librariesPaths.containsKey(libraryName)) {
+			uri = new StringBuilder();
+			uri.append(address);
+			uri.append(":");
+			uri.append(librariesPaths.get(libraryName));
+		}
+		
+		return uri.toString();
+	}
+	
+	public String getLibraryPath(String libraryName) {
+		return this.librariesPaths.get(libraryName);
+	}
+	
+	public Set<String> getLibraries() {
+		return this.librariesPaths.keySet();
 	}
 	
 	@XmlElement

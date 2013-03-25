@@ -18,6 +18,8 @@ import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.id3.ID3v23Tag;
 
+import ped.dmlib.Util;
+
 public class Mp3Meta implements Serializable 
 {
 	private static final long serialVersionUID = 1L;
@@ -93,15 +95,17 @@ public class Mp3Meta implements Serializable
 		this.file.commit();
 	}
 
-	/*public void saveTagToFile(String path) throws IOException {	
-		Util.clearFile(path);
-		
+	public void saveTagToFile(String path, String name) throws IOException {	
+		File f = new File(path+name);
+		if(f.exists()) {
+		Util.clearFile(f.getAbsolutePath()); }
 		for(FieldKey fk : FieldKey.values()) {
-			if (tag.getFirst(fk) != "") {
-			Util.addLineIntoFile(path, fk +"|"+ tag.getFirst(fk));
+			if (tag.getFirst(fk) != null) {
+				Util.writeIntoFile(path, name, fk+"|"+tag.getFirst(fk));
 			}
 		}	
 	}
+	/*
 	public void saveTagFromFile(String path) throws IOException, KeyNotFoundException, FieldDataInvalidException, CannotWriteException {
 		InputStream ips=new FileInputStream(path); 
 		InputStreamReader ipsr=new InputStreamReader(ips);

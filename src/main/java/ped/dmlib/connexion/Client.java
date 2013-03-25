@@ -3,6 +3,9 @@ package ped.dmlib.connexion;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,11 +14,12 @@ import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
 
-import ped.dmlib.OldRsyncController;
 import ped.dmlib.Util;
 import ped.dmlib.filemanagement.ComputerRepositoriesList;
 import ped.dmlib.filemanagement.ComputerRepository;
-import ped.dmlib.metadata.Mp3Meta;
+import ped.dmlib.local.model.Mp3Meta;
+import ped.dmlib.temp.FactoryRepo;
+import ped.dmlib.temp.Repo;
 import ped.dmlib.transfer.BinaryFileTransfer;
 import ped.dmlib.transfer.RsyncTransfer;
 
@@ -33,10 +37,12 @@ import com.aragost.javahg.internals.Server;
 import com.drew.imaging.ImageProcessingException;
 
 
-public class Client {
-
-
-
+public class Client 
+{
+	private ArrayList<File> myFileList = new ArrayList<File>();
+	private FactoryRepo factoryRepo;
+	private Repo localRepository;
+	
 	/*public Client(String installationPath) throws IOException {
         this.installationPath = installationPath;      
         HgServer server = new HgServer(this.repository, 8000);
@@ -48,12 +54,15 @@ public class Client {
     }*/
 
 	HgServer server;
-	String MetaPath = "/net/cremi/sdasilva/Documents/dmlib/Client/Meta";
-	String HashPath = "/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/Hash";
 	Repository repository;
 	String installationPath;
 	String repositoryMetaName = "Meta";
 	String repositoryHashName = "Hash";
+	
+	private void init(String installationPath) {
+		this.factoryRepo = new FactoryRepo(".");
+		this.localRepository = factoryRepo.getLocalRepo();
+	}
 
 
 	public Client(String installationPath) throws IOException {
@@ -99,12 +108,12 @@ public class Client {
 		br.close();
 
 
-
+		init(installationPath);
 
 		//this.server = new HgServer(this.repository, 8000);
 	}
 
-	public void addServer(String server) throws IOException {
+	public void addServer(String server, String repPath) throws IOException {
 		
 		pull(server);
 		System.out.println("pull");
@@ -113,22 +122,26 @@ public class Client {
 		//RsyncController rc = new RsyncController("", "", "", "", "", "");
 		//rc.setInfos(server, dest, libraryName, *);
 		
-		ComputerRepository local = new ComputerRepository();
-		ComputerRepository remote = new ComputerRepository();
-		remote.setAddress(server);
+		Repo remoteRepo = this.factoryRepo.getRemoteRepository(server);
+		BinaryFileTransfer bft = new RsyncTransfer(this.localRepository, remoteRepo);
 		
-		String test = "/net/cremi/bnoleau/espaces/travail/project/";
+		for (String libraryName : remoteRepo.getLibraries()) {
+			this.localRepository.addLibrary(libraryName, repPath + libraryName);
+			bft.pull(libraryName, "*");
+		}		
+		
+		/*String test = "/net/cremi/bnoleau/espaces/travail/project/";
 		
 		
 		local.addLibrary("images", test + "serveur1/bin/image");
 		local.addLibrary("musics", test + "serveur1/bin/music");
 		
 		remote.addLibrary("images", test + "serveur2/bin/image");
-		remote.addLibrary("musics", test + "serveur2/bin/music");
+		remote.addLibrary("musics", test + "serveur2/bin/music");*/
 		
-		BinaryFileTransfer bft = new RsyncTransfer(local, remote);
+		//BinaryFileTransfer bft = new RsyncTransfer(local, remote);
 		//bft.pull("images", null);
-		bft.pull("musics", "*");
+		//bft.pull("musics", "*");
 	}
 	
 	
@@ -141,13 +154,53 @@ public class Client {
 		rl.save(new File(this.repository.getDirectory().getAbsolutePath()+"config.yaml"));
 	}
 	
-	public void addRepository(String path) throws ImageProcessingException, FileNotFoundException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
-		String name = "zik.mp3";
-		String[] split = path.split("/");
-		String repoName = split[split.length-1];
-		generateFileMeta(path+name,repoName);
-		add();
-		commit(path+name);
+	//renvoie une liste de fichiers a partir du dossier en parametre
+	public ArrayList<File> getFileFromRep(String repPath)
+	{
+		File rep = new File(repPath);
+		if(rep.listFiles().length > 0)
+		{
+		    for (File f : rep.listFiles())
+		    {
+		    	Path myPath = Paths.get(f.getAbsolutePath());
+		        if (f.isFile() && Files.isReadable(myPath))
+		        {
+		        	if(getExtension(f) != null) {
+		        		myFileList.add(f);
+		        	}
+		        }
+		        else if(f.isDirectory() && Files.isReadable(myPath))
+		        {
+		        	getFileFromRep(f.getAbsolutePath());
+		        }
+		    }
+		}
+		return myFileList;
+	}
+	
+	//renovie l'extension du fichier
+	public String getExtension(File currentFile) {
+		String extension = currentFile.getAbsolutePath().substring(currentFile.getAbsolutePath().indexOf("."));
+		if (extension.matches(".mp3") || extension.matches(".jpg")) {
+			return extension;
+		}
+		else {
+			return null;
+		}
+	}
+	
+	public void addRepository(File rep) throws ImageProcessingException, FileNotFoundException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException 
+	{
+		this.localRepository.addLibrary(rep.getName(), rep.getAbsolutePath());
+		this.factoryRepo.setLocalRepo(localRepository);
+		this.factoryRepo.saveRepositories();
+		myFileList = getFileFromRep(rep.getAbsolutePath());
+		for (File file : myFileList) {
+			generateFileMeta(file.getAbsolutePath(),rep.getName());
+			add();
+			commit(file.getAbsolutePath());
+		}
+		myFileList.clear();
 	}
 
 	public List<Changeset> pull(String source) throws IOException {
@@ -244,15 +297,15 @@ public void addFile(String filePath) throws CannotReadException, IOException, Ta
 
 	public void generateFileMeta(String srcFile, String repositoryName ) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, FileNotFoundException {
 		File f = new File(srcFile);
-		String name = f.getName().replace(".mp3", ".meta");  
-		String repPath = this.installationPath+getDirectoryFile(repositoryName, srcFile);
+		String name = f.getName().replace(".mp3", ".meta"); 
+		String repPath = this.installationPath+this.repositoryMetaName+"/"+getDirectoryFile(repositoryName, srcFile);
+		
 		String destDirectory = repPath.replace(f.getName(), "");
 
 		if (Util.getExt(srcFile).equals(".mp3")) {
 			Mp3Meta fileMetas = new Mp3Meta(f);
-			fileMetas.saveTagToFile(destDirectory,name);}
-		// } else if (ext == ".jpg") {
-		// }
+			fileMetas.saveTagToFile(destDirectory,name);
+		}
 	}
 
 	public void generateFileHash(String filePath) throws IOException {

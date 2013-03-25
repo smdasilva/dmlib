@@ -27,7 +27,7 @@ public class AddServerPanel extends JPanel
 	JButton valid;
 	JButton cancel;
 	
-	public AddServerPanel(MainPanel main)
+	public AddServerPanel(final MainPanel main)
 	{
 		mainPanel = main;
 		layout = new SpringLayout();
@@ -57,6 +57,18 @@ public class AddServerPanel extends JPanel
 		cancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				AddServerPanel panel = (AddServerPanel) ((Component) e.getSource()).getParent();
+				JFrame frame = (JFrame) (panel.getParent().getParent().getParent());
+				frame.dispose();
+			}
+		});
+		
+		valid.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AddServerPanel panel = (AddServerPanel) ((Component) e.getSource()).getParent();
+				String ip = panel.serverAdd2.getText();
+				String repPath = panel.repChooser2.getText();
+				
+				main.getServerController().addServer(ip, repPath);
 				JFrame frame = (JFrame) (panel.getParent().getParent().getParent());
 				frame.dispose();
 			}

@@ -9,14 +9,13 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-@SuppressWarnings("restriction")
 public class FactoryRepo {
 	private Repo localRepository = null;
 	private List<Repo> remoteRepositories = new ArrayList<Repo>();
 	
 	private String installationPath;
-	private final static String configPah = ".config/";
-	private final static String remoteRepoPah = "hg/.config/";
+	private final static String configPah = "/.config/";
+	private final static String remoteRepoPah = "/hg/.config/";
 	
 	public FactoryRepo(String installationPath) {
 		this.installationPath = installationPath;
@@ -27,6 +26,12 @@ public class FactoryRepo {
 	}
 	
 	public Repo getLocalRepo() {
+		if(this.localRepository == null)
+			this.localRepository = this.loadRepository(new File(this.installationPath + this.configPah + "local.repo"));
+			
+		if(this.localRepository == null)
+			this.localRepository = new Repo();
+		
 		return localRepository;
 	}
 	
@@ -36,6 +41,17 @@ public class FactoryRepo {
 	
 	public List<Repo> getRemoteRepositories() {
 		return this.remoteRepositories;
+	}
+	
+	public Repo getRemoteRepository(String address) {
+		this.loadRemoteRepositories();
+		
+		for (Repo tmpRepo : this.remoteRepositories) {
+			if(tmpRepo.getAddress().equals(address))
+				return tmpRepo;
+		}
+		
+		return null;
 	}
 	
 	public void addRemoteRepo(Repo repo) {
@@ -66,6 +82,17 @@ public class FactoryRepo {
 				remoteRepositories.add(repoRemote);
 		}
 	}
+	
+	private void loadRemoteRepositories() {
+		String reposPath = installationPath + remoteRepoPah;
+		File reposDir = new File(reposPath);
+		
+		for (File fileRepo : reposDir.listFiles()) {
+			Repo repoRemote = loadRepository(fileRepo);
+			if(!repoRemote.equals(localRepository))
+				remoteRepositories.add(repoRemote);
+		}
+	}
 
 	private Repo loadRepository(File fileLocal) {
 		Repo repoLoaded = null;
@@ -76,13 +103,16 @@ public class FactoryRepo {
 			
 			repoLoaded = (Repo) um.unmarshal(fileLocal);
 		} catch (JAXBException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
 		return repoLoaded;
 	}
 	
 	public void saveRepositories() {
+		createArbo(installationPath + configPah);
+		createArbo(installationPath + remoteRepoPah);
+		
 		String pathLocal = installationPath + configPah + "local.repo"; 
 		File fileLocal = new File(pathLocal);
 		
@@ -104,14 +134,16 @@ public class FactoryRepo {
 	
 	private void saveRepository(Repo repoToSave, File fileRepo) {
 		JAXBContext context;
+		
 		try {
 			context = JAXBContext.newInstance(Repo.class);
 			Marshaller m = context.createMarshaller();
 			
 			m.marshal(repoToSave, fileRepo);
+
 		} catch (JAXBException e) {
 			e.printStackTrace();
-		}
+		} 
 	}
 
 	@Override
