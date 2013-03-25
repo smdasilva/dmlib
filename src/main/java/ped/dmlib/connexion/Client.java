@@ -60,34 +60,12 @@ public class Client
 	String installationPath;
 	String repositoryMetaName = "Meta";
 	String repositoryHashName = "Hash";
-	String repoPath = "/hg/";
 	
 	private void init(String installationPath) {
 		this.factoryRepo = new FactoryRepo(".");
 		this.localRepository = factoryRepo.getLocalRepo();
 		
-		allowPushHgrc();
 	}
-	
-	private void allowPushHgrc() {
-		File hgrc = new File(this.installationPath + this.repoPath + ".hg/hgrc");
-		FileWriter fw;
-		try {
-			fw = new FileWriter(hgrc);
-			String allowPush = "[web]\n" +
-					"ssl_required = false\n"+
-					"allow_push = *";
-
-			fw.write(allowPush);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		
-	}
-	
-
 
 	public Client(String installationPath) throws IOException {
 		this.installationPath = installationPath;
