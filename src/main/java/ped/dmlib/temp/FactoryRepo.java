@@ -1,6 +1,8 @@
 package ped.dmlib.temp;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+
+import com.google.common.net.InetAddresses;
 
 public class FactoryRepo {
 	private Repo localRepository = null;
@@ -44,10 +48,18 @@ public class FactoryRepo {
 	}
 	
 	public Repo getRemoteRepository(String address) {
+		InetAddress ia = null;
+		
+		try {
+			ia = InetAddress.getByName(address);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		
 		this.loadRemoteRepositories();
 		
 		for (Repo tmpRepo : this.remoteRepositories) {
-			if(tmpRepo.getAddress().equals(address))
+			if(tmpRepo.getAddress().equals(ia.getHostAddress()))
 				return tmpRepo;
 		}
 		

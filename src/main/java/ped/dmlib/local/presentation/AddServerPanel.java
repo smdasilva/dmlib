@@ -21,6 +21,7 @@ public class AddServerPanel extends JPanel
 	JLabel title;
 	JLabel serverAdd;
 	JTextField serverAdd2;
+	JTextField serverAdd3;
 	JLabel repChooser;
 	JTextField repChooser2;
 	JButton repChooser3;
@@ -34,6 +35,7 @@ public class AddServerPanel extends JPanel
 		title = new JLabel("Specify the repository to clone : ");
 		serverAdd = new JLabel("Server : ");
 		serverAdd2 = new JTextField();
+		serverAdd3 = new JTextField();
 		repChooser = new JLabel("Target Directory : ");
 		repChooser2 = new JTextField();
 		repChooser3 = new JButton("...");
@@ -66,9 +68,10 @@ public class AddServerPanel extends JPanel
 			public void actionPerformed(ActionEvent e) {
 				AddServerPanel panel = (AddServerPanel) ((Component) e.getSource()).getParent();
 				String ip = panel.serverAdd2.getText();
+				String port = panel.serverAdd3.getText();
 				String repPath = panel.repChooser2.getText();
 				
-				main.getServerController().addServer(ip, repPath);
+				main.getServerController().addServer(ip, port, repPath);
 				JFrame frame = (JFrame) (panel.getParent().getParent().getParent());
 				frame.dispose();
 			}
@@ -79,6 +82,7 @@ public class AddServerPanel extends JPanel
 		this.add(title);
 		this.add(serverAdd);
 		this.add(serverAdd2);
+		this.add(serverAdd3);
 		this.add(repChooser);
 		this.add(repChooser2);
 		this.add(repChooser3);
@@ -89,6 +93,7 @@ public class AddServerPanel extends JPanel
 		layout.putConstraint(SpringLayout.NORTH, title, 20, SpringLayout.NORTH, this);
 		layout.putConstraint(SpringLayout.NORTH, serverAdd, 30, SpringLayout.NORTH, title);
 		layout.putConstraint(SpringLayout.NORTH, serverAdd2, 30, SpringLayout.NORTH, title);
+		layout.putConstraint(SpringLayout.NORTH, serverAdd3, 30, SpringLayout.NORTH, title);
 		layout.putConstraint(SpringLayout.NORTH, repChooser, 20, SpringLayout.SOUTH, serverAdd);
 		layout.putConstraint(SpringLayout.NORTH, repChooser2, 20, SpringLayout.SOUTH, serverAdd);
 		layout.putConstraint(SpringLayout.NORTH, repChooser3, 20, SpringLayout.SOUTH, serverAdd);
@@ -98,11 +103,13 @@ public class AddServerPanel extends JPanel
 		layout.putConstraint(SpringLayout.WEST, serverAdd, 30, SpringLayout.WEST, this);
 		layout.putConstraint(SpringLayout.WEST, repChooser, 30, SpringLayout.WEST, this);
 		layout.putConstraint(SpringLayout.WEST, serverAdd2, 10, SpringLayout.EAST, repChooser);
+		layout.putConstraint(SpringLayout.WEST, serverAdd3, 5, SpringLayout.EAST, serverAdd2);
 		layout.putConstraint(SpringLayout.WEST, repChooser2, 10, SpringLayout.EAST, repChooser);
 		layout.putConstraint(SpringLayout.WEST, repChooser3, 5, SpringLayout.EAST, repChooser2);
 		
 		//Position by Right
-		layout.putConstraint(SpringLayout.EAST, serverAdd2, -10, SpringLayout.EAST, this);
+		layout.putConstraint(SpringLayout.EAST, serverAdd2, -50, SpringLayout.EAST, this);
+		layout.putConstraint(SpringLayout.EAST, serverAdd3, -10, SpringLayout.EAST, this);
 		layout.putConstraint(SpringLayout.EAST, repChooser2, -40, SpringLayout.EAST, this);
 		layout.putConstraint(SpringLayout.EAST, repChooser3, -10, SpringLayout.EAST, this);
 		

@@ -58,7 +58,9 @@ public class RsyncTransfer implements BinaryFileTransfer {
 		
 		if(filePath.equals("") || 
 				filePath.equals("*") || 
-				filePath == null) {}
+				filePath == null) {
+			
+		}
 		else {
 			srcPathTmp.append(filePath);
 			destPathTmp.append(filePath);
@@ -72,6 +74,8 @@ public class RsyncTransfer implements BinaryFileTransfer {
 	}
 	
 	private void execute() throws Exception {
+		System.out.println(this.srcPath);
+		System.out.println(this.destPath);
 		String cmd[] = new String[]{"rsync", "-arv", this.srcPath, this.destPath};
 
 		ProcessBuilder pb = new ProcessBuilder(cmd);

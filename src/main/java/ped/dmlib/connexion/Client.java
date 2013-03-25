@@ -2,6 +2,7 @@ package ped.dmlib.connexion;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,6 +36,7 @@ import com.aragost.javahg.commands.PushCommand;
 import com.aragost.javahg.commands.UpdateCommand;
 import com.aragost.javahg.internals.Server;
 import com.drew.imaging.ImageProcessingException;
+import com.sun.org.apache.bcel.internal.generic.PUSH;
 
 
 public class Client 
@@ -58,11 +60,33 @@ public class Client
 	String installationPath;
 	String repositoryMetaName = "Meta";
 	String repositoryHashName = "Hash";
+	String repoPath = "/hg/";
 	
 	private void init(String installationPath) {
 		this.factoryRepo = new FactoryRepo(".");
 		this.localRepository = factoryRepo.getLocalRepo();
+		
+		allowPushHgrc();
 	}
+	
+	private void allowPushHgrc() {
+		File hgrc = new File(this.installationPath + this.repoPath + ".hg/hgrc");
+		FileWriter fw;
+		try {
+			fw = new FileWriter(hgrc);
+			String allowPush = "[web]\n" +
+					"ssl_required = false\n"+
+					"allow_push = *";
+
+			fw.write(allowPush);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+	}
+	
 
 
 	public Client(String installationPath) throws IOException {
@@ -113,46 +137,27 @@ public class Client
 		//this.server = new HgServer(this.repository, 8000);
 	}
 
-	public void addServer(String server, String repPath) throws IOException {
+	public void addServer(String server, String port, String repPath) throws IOException {
 		
-		pull(server);
+		pull("http://" + server + ":" + port);
 		System.out.println("pull");
 		update();
-		//Rpull(server)
-		//RsyncController rc = new RsyncController("", "", "", "", "", "");
-		//rc.setInfos(server, dest, libraryName, *);
 		
 		Repo remoteRepo = this.factoryRepo.getRemoteRepository(server);
 		BinaryFileTransfer bft = new RsyncTransfer(this.localRepository, remoteRepo);
 		
 		for (String libraryName : remoteRepo.getLibraries()) {
-			this.localRepository.addLibrary(libraryName, repPath + libraryName);
+			this.localRepository.addLibrary(libraryName, repPath + "/" + libraryName);
 			bft.pull(libraryName, "*");
-		}		
+		}
 		
-		/*String test = "/net/cremi/bnoleau/espaces/travail/project/";
+		this.factoryRepo.saveRepositories();
 		
+		add();
+		commit(this.localRepository.getName() + ".repo");
 		
-		local.addLibrary("images", test + "serveur1/bin/image");
-		local.addLibrary("musics", test + "serveur1/bin/music");
-		
-		remote.addLibrary("images", test + "serveur2/bin/image");
-		remote.addLibrary("musics", test + "serveur2/bin/music");*/
-		
-		//BinaryFileTransfer bft = new RsyncTransfer(local, remote);
-		//bft.pull("images", null);
-		//bft.pull("musics", "*");
 	}
 	
-	
-
-	public void registerPC() throws IOException {
-		ComputerRepository newRepo = new ComputerRepository(Util.getComputerFullName(), Util.myIP());
-		ComputerRepositoriesList rl = new ComputerRepositoriesList();
-		rl.load(this.repository.getDirectory().getAbsolutePath()+"/config.yaml");
-		rl.addRepository(newRepo);
-		rl.save(new File(this.repository.getDirectory().getAbsolutePath()+"config.yaml"));
-	}
 	
 	//renvoie une liste de fichiers a partir du dossier en parametre
 	public ArrayList<File> getFileFromRep(String repPath)
@@ -202,6 +207,7 @@ public class Client
 		}
 		myFileList.clear();
 	}
+	
 
 	public List<Changeset> pull(String source) throws IOException {
 		PullCommand pull = new PullCommand(this.repository);
@@ -272,6 +278,18 @@ public void addFile(String filePath) throws CannotReadException, IOException, Ta
             ci.execute();
         }
 	 */
+	
+	public void push() {
+		PushCommand push = new PushCommand(this.repository);
+		for(Repo server : this.factoryRepo.getRemoteRepositories()){
+			try {
+				push.on(this.repository).execute(server.getURL());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public void add() {
 		AddCommand ac = new AddCommand(this.repository);
 		ac.execute();

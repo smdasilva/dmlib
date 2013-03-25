@@ -62,10 +62,10 @@ public class ServerController
 		}
 	}
 	
-	public void addServer(String ip, String repPath)
+	public void addServer(String ip, String port, String repPath)
 	{
 		try {
-			c.addServer(ip, repPath);
+			c.addServer(ip, port, repPath);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

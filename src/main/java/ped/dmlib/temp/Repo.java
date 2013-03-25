@@ -46,6 +46,16 @@ public class Repo {
 		return uri.toString();
 	}
 	
+	public String getURL() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.getAddress());
+		
+		if(this.getPort() > 1024)
+			sb.append(":" + this.getPort());
+		
+		return sb.toString();
+	}
+	
 	public String getLibraryPath(String libraryName) {
 		return this.librariesPaths.get(libraryName);
 	}
