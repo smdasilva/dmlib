@@ -28,12 +28,13 @@ import com.drew.imaging.ImageProcessingException;
 public class LocalController
 {
 	private Dico myDico;
-	private Thread myWatcher;
+	private ArrayList<Thread> watcherList;
 	private ArrayList<MyFileDTO> fileList;
 	
 	public LocalController()
 	{
 		myDico = new Dico();
+		watcherList = new ArrayList<Thread>();
 		String path = System.getProperty("user.home")+"/Shared Media Center";
 		File startFile = new File(path);
 		if (! startFile.exists()) {
@@ -41,7 +42,23 @@ public class LocalController
 		}
 		Path dir = Paths.get(startFile.getAbsolutePath());
 		try {
-			myWatcher = new MyFileWatcher(dir, true);
+			Thread myWatcher = new MyFileWatcher(dir, true);
+			myWatcher.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void addFileWatcher(String repPath)
+	{
+		File f = new File(repPath);
+		if (! f.exists()) {
+			f.mkdir();
+		}
+		Path dir = Paths.get(f.getAbsolutePath());
+		try {
+			Thread myWatcher = new MyFileWatcher(dir, true);
+			watcherList.add(myWatcher);
 			myWatcher.start();
 		} catch (IOException e) {
 			e.printStackTrace();

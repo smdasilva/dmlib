@@ -23,8 +23,8 @@ public class MyButtonListener implements ActionListener
 		if(current.getText() == "Add Server")
 		{
 			JFrame addServerFrame = new JFrame();
-			addServerFrame.setTitle("File Update");
-			addServerFrame.setSize(400, 200);
+			addServerFrame.setTitle("Add Server");
+			addServerFrame.setSize(400, 150);
 			addServerFrame.setLocation(800, 350);
 			AddServerPanel myAddServerPanel = new AddServerPanel(main);
 			addServerFrame.setContentPane(myAddServerPanel);
@@ -44,6 +44,7 @@ public class MyButtonListener implements ActionListener
 					//File rep = new File(System.getProperty("user.home")+"/Shared Media Center/"+fileChooser.getSelectedFile().getName());
 					File rep = new File(fileChooser.getSelectedFile().getAbsolutePath());
 					main.getTreePanel().refreshTreePanel(rep);
+					main.getLocalController().addFileWatcher(rep.getAbsolutePath());
 					main.getServerController().addRepository(rep);
 				/*} catch (IOException e1) {
 					e1.printStackTrace();

@@ -46,6 +46,8 @@ public class Client
 	private FactoryRepo factoryRepo;
 	private Repo localRepository;
 	
+	private String sharedMediaCenterPath = System.getProperty("user.home")+"/Shared Media Center/";
+	
 	/*public Client(String installationPath) throws IOException {
         this.installationPath = installationPath;      
         HgServer server = new HgServer(this.repository, 8000);
@@ -65,7 +67,7 @@ public class Client
 	private void init(String installationPath) {
 		this.factoryRepo = new FactoryRepo(".");
 		this.localRepository = factoryRepo.getLocalRepo();
-		
+		this.localRepository.addLibrary("shared_media_center", this.sharedMediaCenterPath);
 	}
 
 	public Client(String installationPath) throws IOException {
@@ -115,7 +117,7 @@ public class Client
 
 		//this.server = new HgServer(this.repository, 8000);
 	}
-
+		
 	public Map<String, String> addServer(String server, String port, String repPath) throws IOException {
 		
 		pull("http://" + server + ":" + port);
@@ -123,12 +125,8 @@ public class Client
 		update();
 		
 		Repo remoteRepo = this.factoryRepo.getRemoteRepository(server);
-		BinaryFileTransfer bft = new RsyncTransfer(this.localRepository, remoteRepo);
 		System.out.println(remoteRepo);
-		for (String libraryName : remoteRepo.getLibraries()) {
-			this.localRepository.addLibrary(libraryName, repPath + "/" + libraryName);
-			bft.pull(libraryName, "*");
-		}
+		binaryPullAllLibrary(repPath, remoteRepo);
 		
 		this.factoryRepo.saveRepositories();
 		
@@ -138,6 +136,30 @@ public class Client
                 return this.localRepository.getLibrariesPaths();
 	}
 	
+	private void binaryPullLibrary(Repo remote, String libraryName) {
+		BinaryFileTransfer bft = new RsyncTransfer(this.localRepository, remote);
+		bft.pull(libraryName, "*");
+	}
+
+	private void binaryPullAllLibrary(String repPath, Repo remoteRepo) {
+		for (String libraryName : remoteRepo.getLibraries()) {
+			this.localRepository.addLibrary(libraryName, repPath + "/" + libraryName);
+			binaryPullLibrary(remoteRepo, libraryName);
+		}
+	}
+	
+	private void binaryPushLibrary(String libraryName) {
+		for (Repo remote : this.factoryRepo.getRemoteRepositories()) {
+			BinaryFileTransfer bft = new RsyncTransfer(this.localRepository, remote);
+			bft.push(libraryName, "*");
+		}
+	}
+	
+	private void binaryPushAllLibrary() {
+		for (String libraryName : this.localRepository.getLibraries()) {
+			binaryPushLibrary(libraryName);
+		}
+	}
 	
 	//renvoie une liste de fichiers a partir du dossier en parametre
 	public ArrayList<File> getFileFromRep(String repPath)
@@ -176,15 +198,22 @@ public class Client
 	
 	public void addRepository(File rep) throws ImageProcessingException, FileNotFoundException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException 
 	{
-		this.localRepository.addLibrary(rep.getName(), rep.getAbsolutePath());
+		String libraryName = rep.getName();
+		String libraryPath = rep.getAbsolutePath();
+		
+		this.localRepository.addLibrary(libraryName, libraryPath);
 		this.factoryRepo.setLocalRepo(localRepository);
 		this.factoryRepo.saveRepositories();
-		myFileList = getFileFromRep(rep.getAbsolutePath());
+		myFileList = getFileFromRep(libraryPath);
 		for (File file : myFileList) {
 			generateFileMeta(file.getAbsolutePath(),rep.getName());
 			add();
 			commit(file.getAbsolutePath());
 		}
+		
+		push();
+		this.binaryPushLibrary(libraryName);
+		
 		myFileList.clear();
 	}
 	

@@ -12,23 +12,7 @@ import ped.dmlib.local.presentation.MainPanel;
 public class MainAppLauncher 
 {
 	public static void main(String[] args) 
-	{	
-		/*try {
-			JPGMeta2 jpg = new JPGMeta2("/net/cremi/echicoua/espaces/travail/PED_BibMultiDis/testfiles/pictures/others/1325286294.jpg");
-		} catch (ImageProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JpegFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		
+	{		
 		int frameHeight = 600;
 		int frameWidth = 1000;
 		LocalController localController = null;

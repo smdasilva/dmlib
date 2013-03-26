@@ -21,6 +21,8 @@ public class ServerController
 {
 	Client c;
 	
+	
+	
 	public ServerController() throws IOException
 	{    	
     	BaseRepository br1;
