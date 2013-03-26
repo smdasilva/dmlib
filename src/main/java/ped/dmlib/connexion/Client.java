@@ -261,7 +261,7 @@ public void addFile(String filePath) throws CannotReadException, IOException, Ta
 		PushCommand push = new PushCommand(this.repository);
 		for(Repo server : this.factoryRepo.getRemoteRepositories()){
 			try {
-				push.on(this.repository).execute(server.getURL());
+				push.on(this.repository).execute("http://" + server.getURL());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
