@@ -22,16 +22,19 @@ public class MercurialServer extends Thread {
 
 	private void execute() {
 		int returnCode = 0;
+		Process p = null;
 		try {
-			Process p = server.execute();
+			p = server.execute();
 			returnCode = p.waitFor();
 			
 			LOG.info("hg serve return code " + returnCode);
 		} catch (IOException e) {
 			LOG.error("hg serve IOException");
-		}
-		catch (InterruptedException e) {
+		} catch (InterruptedException e) {
 			LOG.error("hg serve InterruptedException");
+		} finally {
+			if(p != null)
+				p.destroy();
 		}
 	}
 }
