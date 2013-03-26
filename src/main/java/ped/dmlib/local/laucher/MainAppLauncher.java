@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
+import ped.dmlib.connexion.Config;
 import ped.dmlib.local.controller.LocalController;
 import ped.dmlib.local.controller.ServerController;
 import ped.dmlib.local.presentation.MainPanel;
@@ -32,6 +33,10 @@ public class MainAppLauncher
 		int frameWidth = 1000;
 		LocalController localController = null;
 		ServerController servController = null;
+		
+		Config config = new Config(".");
+		config.initAll();
+		
 		try {
 			localController = new LocalController();
 			servController = new ServerController();
