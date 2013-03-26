@@ -265,7 +265,7 @@ public void addFile(String filePath) throws CannotReadException, IOException, Ta
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}rm 
+		}
 	}
 	
 	public void add() {
