@@ -7,8 +7,8 @@ import java.io.IOException;
 import ped.dmlib.Util;
 
 public class Config {
-	private static final String HOOK = "[hooks]\n" +
-			"changegroup.update = update";
+	private static final String HOOK = "[hook]\n" +
+			"push.reception = update";
 	
 	private static final String ALLOW_PUSH = "[web]\n" +
 			"push_ssl = false\n" +
