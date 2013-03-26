@@ -70,7 +70,6 @@ public class Client
 	private void init(String installationPath) {
 		this.factoryRepo = new FactoryRepo(".");
 		this.localRepository = factoryRepo.getLocalRepo();
-		this.localRepository.addLibrary("shared_media_center", this.sharedMediaCenterPath);
 	}
 
 	public Client(String installationPath) throws IOException {
@@ -153,6 +152,8 @@ public class Client
 	
 	private void binaryPushLibrary(String libraryName) {
 		for (Repo remote : this.factoryRepo.getRemoteRepositories()) {
+			System.out.println(libraryName);
+			System.out.println(remote);
 			BinaryFileTransfer bft = new RsyncTransfer(this.localRepository, remote);
 			bft.push(libraryName, "*");
 		}
