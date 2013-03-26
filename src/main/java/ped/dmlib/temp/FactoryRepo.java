@@ -64,6 +64,8 @@ public class FactoryRepo {
 				return tmpRepo;
 		}
 		
+		System.out.println(this.remoteRepositories);
+		
 		return null;
 	}
 	
@@ -102,14 +104,18 @@ public class FactoryRepo {
 		
 		for (File fileRepo : reposDir.listFiles()) {
 			Repo repoRemote = loadRepository(fileRepo);
-                        if(!repoRemote.getAddress().equals(localRepository.getAddress()))
-                        {
-                            remoteRepositories.add(repoRemote);
-                            /*if(repoRemote.getPort() != (localRepository.getPort()))
-                            {
-                                remoteRepositories.add(repoRemote);      
-                            }*/ 
-                        }
+			
+			if(!repoRemote.equals(localRepository))
+				remoteRepositories.add(repoRemote);
+			
+//                        if(!repoRemote.getAddress().equals(localRepository.getAddress()))
+//                        {
+//                            remoteRepositories.add(repoRemote);
+//                            /*if(repoRemote.getPort() != (localRepository.getPort()))
+//                            {
+//                                remoteRepositories.add(repoRemote);      
+//                            }*/
+//                        }
 		}
 	}
 

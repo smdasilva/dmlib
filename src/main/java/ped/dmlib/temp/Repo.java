@@ -110,7 +110,7 @@ public class Repo {
 		librariesPaths.put(libraryName, path);
 	}
 
-	public boolean equals(Repo other) {
+	public boolean equals(Repo other) {		
 		return this.getURL().equals(other.getURL());
 	}
 

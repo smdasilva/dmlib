@@ -204,9 +204,11 @@ public class Client
 		this.localRepository.addLibrary(libraryName, libraryPath);
 		this.factoryRepo.setLocalRepo(localRepository);
 		this.factoryRepo.saveRepositories();
+		
 		myFileList = getFileFromRep(libraryPath);
+		
 		for (File file : myFileList) {
-			generateFileMeta(file.getAbsolutePath(),rep.getName());
+			generateFileMeta(file.getAbsolutePath(), libraryName);
 			add();
 			commit(file.getAbsolutePath());
 		}
@@ -216,7 +218,6 @@ public class Client
 		
 		myFileList.clear();
 	}
-	
 
 	public List<Changeset> pull(String source) throws IOException {
 		PullCommand pull = new PullCommand(this.repository);
@@ -292,6 +293,7 @@ public void addFile(String filePath) throws CannotReadException, IOException, Ta
 		PushCommand push = new PushCommand(this.repository);
 		for(Repo server : this.factoryRepo.getRemoteRepositories()){
 			try {
+				System.out.println("push " + server);
 				push.on(this.repository).execute("http://" + server.getURL());
 			} catch (IOException e) {
 				e.printStackTrace();
