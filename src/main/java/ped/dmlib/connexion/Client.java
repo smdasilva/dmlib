@@ -133,7 +133,7 @@ public class Client
 		
 		add();
 		commit(this.localRepository.getName() + ".repo");
-		
+		push();
 	}
 	
 	

@@ -8,7 +8,7 @@ import ped.dmlib.Util;
 
 public class Config {
 	private static final String HOOK = "[hooks]\n" +
-			"pull.reception = update";
+			"push.reception = update";
 	
 	private static final String ALLOW_PUSH = "[web]\n" +
 			"push_ssl = false\n" +
