@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import net.sourceforge.jheader.JpegFormatException;
+
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
@@ -20,8 +22,6 @@ import java.util.Map;
 public class ServerController 
 {
 	Client c;
-	
-	
 	
 	public ServerController() throws IOException
 	{    	
@@ -61,6 +61,8 @@ public class ServerController
 		} catch (ReadOnlyFileException e) {
 			e.printStackTrace();
 		} catch (InvalidAudioFrameException e) {
+			e.printStackTrace();
+		} catch (JpegFormatException e) {
 			e.printStackTrace();
 		}
 	}
