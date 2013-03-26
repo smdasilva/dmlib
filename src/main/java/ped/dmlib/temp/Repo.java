@@ -105,8 +105,7 @@ public class Repo {
 	}
 
 	public boolean equals(Repo other) {
-		return ((this.address == other.getAddress()) &&
-				(this.port == other.getPort()));
+		return this.getURL().equals(other.getURL());
 	}
 
 	@Override
