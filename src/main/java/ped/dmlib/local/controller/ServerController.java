@@ -15,6 +15,7 @@ import ped.dmlib.connexion.MercurialServer;
 import com.aragost.javahg.BaseRepository;
 import com.aragost.javahg.Repository;
 import com.drew.imaging.ImageProcessingException;
+import java.util.Map;
 
 public class ServerController 
 {
@@ -34,7 +35,7 @@ public class ServerController
         }   
 		br1.close();
 		
-        Thread t1 = new MercurialServer(br1, 8000);
+        Thread t1 = new MercurialServer(br1, 9009);
         t1.start();
         
 		//Lancement client
@@ -62,12 +63,14 @@ public class ServerController
 		}
 	}
 	
-	public void addServer(String ip, String port, String repPath)
+	public Map<String, String> addServer(String ip, String port, String repPath)
 	{
+                Map<String, String> repList = null;
 		try {
-			c.addServer(ip, port, repPath);
+			repList = c.addServer(ip, port, repPath);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+            return repList;
 	}
 }

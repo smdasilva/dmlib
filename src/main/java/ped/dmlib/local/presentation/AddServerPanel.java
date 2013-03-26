@@ -3,6 +3,8 @@ package ped.dmlib.local.presentation;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -71,7 +73,15 @@ public class AddServerPanel extends JPanel
 				String port = panel.serverAdd3.getText();
 				String repPath = panel.repChooser2.getText();
 				
-				main.getServerController().addServer(ip, port, repPath);
+				Map<String, String> repList = main.getServerController().addServer(ip, port, repPath);
+                                if(repList != null)
+                                {
+                                    for(String rep : repList.keySet())
+                                    {
+                                        File f = new File(repList.get(rep));
+                                        main.getTreePanel().refreshTreePanel(f);
+                                    }
+                                }
 				JFrame frame = (JFrame) (panel.getParent().getParent().getParent());
 				frame.dispose();
 			}

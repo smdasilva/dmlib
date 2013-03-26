@@ -37,6 +37,7 @@ import com.aragost.javahg.commands.UpdateCommand;
 import com.aragost.javahg.internals.Server;
 import com.drew.imaging.ImageProcessingException;
 import com.sun.org.apache.bcel.internal.generic.PUSH;
+import java.util.Map;
 
 
 public class Client 
@@ -115,7 +116,7 @@ public class Client
 		//this.server = new HgServer(this.repository, 8000);
 	}
 
-	public void addServer(String server, String port, String repPath) throws IOException {
+	public Map<String, String> addServer(String server, String port, String repPath) throws IOException {
 		
 		pull("http://" + server + ":" + port);
 		System.out.println("pull");
@@ -123,7 +124,7 @@ public class Client
 		
 		Repo remoteRepo = this.factoryRepo.getRemoteRepository(server);
 		BinaryFileTransfer bft = new RsyncTransfer(this.localRepository, remoteRepo);
-		
+		System.out.println(remoteRepo);
 		for (String libraryName : remoteRepo.getLibraries()) {
 			this.localRepository.addLibrary(libraryName, repPath + "/" + libraryName);
 			bft.pull(libraryName, "*");
@@ -134,6 +135,7 @@ public class Client
 		add();
 		commit(this.localRepository.getName() + ".repo");
 		push();
+                return this.localRepository.getLibrariesPaths();
 	}
 	
 	
