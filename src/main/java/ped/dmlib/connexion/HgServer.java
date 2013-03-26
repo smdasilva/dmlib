@@ -63,7 +63,7 @@ public class HgServer {
 	public Process execute() throws IOException {
 		Runtime runtime = Runtime.getRuntime();
 		
-		String[] cmd = new String[]{"serve", "-p " + port};
+		String[] cmd = new String[]{"hg", "serve", "-p " + port};
 
 		LOG.info("Start hg serve in " + repository.getDirectory() + " on port " + this.port);
 
