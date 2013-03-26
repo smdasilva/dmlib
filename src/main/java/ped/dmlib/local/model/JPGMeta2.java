@@ -1,5 +1,8 @@
 package ped.dmlib.local.model;
 
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.image.PixelGrabber;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,7 +35,7 @@ public class JPGMeta2 {
              {
             	 System.out.println(headers.getApp1Header().getTags());
              }
-             System.out.println(headers.getApp1Header().getValue(Tag.ARTIST).toString());
+             //System.out.println(headers.getApp1Header().getValue(Tag.ARTIST).toString());
              //app1Header.setValue(new TagValue(Tag.ARTIST, "Merde"));
              //headers.save(false);
              /*if(app1Header.getTags() == null){
@@ -69,11 +72,12 @@ public class JPGMeta2 {
             return "_";
         }
         
-        public void saveTagFromFile(String pathFile, String pathDest) throws IOException, FileNotFoundException, JpegFormatException {   
+        public void saveTagFromFile(String path, String name) throws IOException, FileNotFoundException, JpegFormatException {   
             
-            
-            new File(pathDest);  
-            Util.clearFile(pathDest); 
+            File f = new File(path+name);
+		if(f.exists()) {
+		Util.clearFile(f.getAbsolutePath()); }
+
             if (headers.getApp1Header() == null) {
                 headers.convertToExif();
             }
@@ -87,8 +91,8 @@ public class JPGMeta2 {
                 if(!value.toString().trim().isEmpty() && ! (tag.toString().equals("DATETIME") || tag.toString().equals("EXIFOFFSET") 
                         || tag.toString().equals("EXIFINTEROPERABILITYOFFSET") || tag.toString().equals("IFD1_JPEGIFOFFSET")) ) {
                 
-                    Util.addLineIntoFile(pathDest, tag.location+"|"+ tag.toString() +"|"+ tag.format +"|"+ value); 
-                    
+                    //Util.addLineIntoFile(name, tag.location+"|"+ tag.toString() +"|"+ tag.format +"|"+ value); 
+                    Util.writeIntoFile(path, name, tag.location+"|"+ tag.toString() +"|"+ tag.format +"|"+ value);
                 }
             }            
         }                                 
@@ -141,6 +145,30 @@ public class JPGMeta2 {
         headers.save(false);
         br.close();          
     }  */
+        
+        
+    public static void saveHashToFile(String source, String destPath, String name) throws FileNotFoundException, IOException {
+		Image image1 = Toolkit.getDefaultToolkit().getImage(source);
+		try {
+			PixelGrabber grab1 = new PixelGrabber(image1, 0, 0, -1, -1,false);
+			int[] data = null;
+			if (grab1.grabPixels()) {
+				int width = grab1.getWidth();
+				int height = grab1.getHeight();
+				data = new int[width * height];
+				data = (int[]) grab1.getPixels();
+			}
+                        int total = 0;
+			for(int d : data) {
+                            total += d;
+                        }
+                        Util.writeIntoFile(destPath, name, String.valueOf(total));
+
+		} catch (InterruptedException e1) {
+			System.out.println("Fail compareImageJPG()");
+		}
+                
+	}
         
         
     public void removeRadicalTag() throws IOException, FileNotFoundException, JpegFormatException

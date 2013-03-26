@@ -1,7 +1,9 @@
 package ped.dmlib.local.model;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 
 import org.jaudiotagger.audio.AudioFile;
@@ -105,6 +107,24 @@ public class Mp3Meta implements Serializable
 			}
 		}	
 	}
+	
+	public void saveHashToFile(String source, String destPath, String name) throws Exception{
+		File f = new File(destPath+name);
+		if(f.exists()) {
+			Util.clearFile(f.getAbsolutePath());
+		}
+		Runtime runtime = Runtime.getRuntime();
+		String cmd[] = new String[]{"./fpcalc", source};
+
+		final Process process = runtime.exec(cmd);
+		process.waitFor();
+        InputStreamReader ipsr=new InputStreamReader(process.getInputStream());
+        BufferedReader br=new BufferedReader(ipsr);
+        br.readLine();
+        br.readLine();
+        Util.writeIntoFile(destPath, name, br.readLine());
+	}
+	
 	/*
 	public void saveTagFromFile(String path) throws IOException, KeyNotFoundException, FieldDataInvalidException, CannotWriteException {
 		InputStream ips=new FileInputStream(path); 

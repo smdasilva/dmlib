@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.jheader.JpegFormatException;
+
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
@@ -18,6 +20,7 @@ import org.jaudiotagger.tag.TagException;
 import ped.dmlib.Util;
 import ped.dmlib.filemanagement.ComputerRepositoriesList;
 import ped.dmlib.filemanagement.ComputerRepository;
+import ped.dmlib.local.model.JPGMeta2;
 import ped.dmlib.local.model.Mp3Meta;
 import ped.dmlib.temp.FactoryRepo;
 import ped.dmlib.temp.Repo;
@@ -161,7 +164,6 @@ public class Client
 		}
 	}
 	
-	//renvoie une liste de fichiers a partir du dossier en parametre
 	public ArrayList<File> getFileFromRep(String repPath)
 	{
 		File rep = new File(repPath);
@@ -185,7 +187,6 @@ public class Client
 		return myFileList;
 	}
 	
-	//renovie l'extension du fichier
 	public String getExtension(File currentFile) {
 		String extension = currentFile.getAbsolutePath().substring(currentFile.getAbsolutePath().indexOf("."));
 		if (extension.matches(".mp3") || extension.matches(".jpg")) {
@@ -196,7 +197,7 @@ public class Client
 		}
 	}
 	
-	public void addRepository(File rep) throws ImageProcessingException, FileNotFoundException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException 
+	public void addRepository(File rep) throws ImageProcessingException, FileNotFoundException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, JpegFormatException 
 	{
 		String libraryName = rep.getName();
 		String libraryPath = rep.getAbsolutePath();
@@ -224,13 +225,13 @@ public class Client
 		return pull.execute(source);
 	}
 
-	public void RepositoryUpdate(String repository) throws IOException, ImageProcessingException, CannotReadException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
+	/*public void RepositoryUpdate(String repository) throws IOException, ImageProcessingException, CannotReadException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
 		List<String> listFile = new ArrayList<String>();                                                                    
 		for(String file : listFile) {
 			generateFileHash(file);
 			//generateFileMeta(file);
 		}
-	}
+	}*/
 
 	/* RepositoryConfiguration REPO_CONF = makeRepoConf();
        for(String r : repo) {
@@ -324,44 +325,46 @@ public void addFile(String filePath) throws CannotReadException, IOException, Ta
 	}
 
 
-	public void generateFileMeta(String srcFile, String repositoryName ) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, FileNotFoundException {
-		File f = new File(srcFile);
-		String name = f.getName().replace(".mp3", ".meta"); 
-		String repPath = this.installationPath+this.repositoryMetaName+"/"+getDirectoryFile(repositoryName, srcFile);
-		
-		String destDirectory = repPath.replace(f.getName(), "");
+	public void generateFileMeta(String srcFile, String repositoryName ) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, ImageProcessingException, FileNotFoundException, JpegFormatException {
+        File f = new File(srcFile);
+        //String name = f.getName().replace(".mp3", ".meta"); 
+        String repPath = this.installationPath+this.repositoryMetaName+"/"+getDirectoryFile(repositoryName, srcFile);
+        
+        String destDirectory = repPath.replace(f.getName(), "");
 
-		if (Util.getExt(srcFile).equals(".mp3")) {
-			Mp3Meta fileMetas = new Mp3Meta(f);
-			fileMetas.saveTagToFile(destDirectory,name);
-		}
-	}
+        if (Util.getExt(srcFile).equals(".mp3")) {
+                        String name = f.getName().replace(".mp3", ".mp3meta"); 
+            Mp3Meta fileMetas = new Mp3Meta(f);
+            fileMetas.saveTagToFile(destDirectory,name);
+        }
+                if (Util.getExt(srcFile).equals(".jpg")) {
+                    String name = f.getName().replace(".jpg", ".jpgmeta"); 
+                    JPGMeta2 jpgMeta = new JPGMeta2(f.getAbsolutePath());
+                    jpgMeta.saveTagFromFile(destDirectory,name);
+                }
+                
+                
+    }
 
-	public void generateFileHash(String filePath) throws IOException {
-		int[] hash = Util.extractPixel(filePath);
-		String result = "";
-		int t = 0;
-		for(int value : hash) {
+    public void generateFileHash(String srcFile, String repositoryName) throws IOException, CannotReadException, TagException, ReadOnlyFileException, InvalidAudioFrameException, InvalidAudioFrameException, Exception {
+        File f = new File(srcFile);
+        String repPath = this.installationPath+this.repositoryHashName+"/"+getDirectoryFile(repositoryName, srcFile);
+        
+        String destDirectory = repPath.replace(f.getName(), "");
 
-			//result = result.concat(String.valueOf(value));
-			//System.out.println(result);
-
-			//Util.writeIntoFile("/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/", "TOTO", String.valueOf(value));
-			Util.addLineIntoFile("/net/cremi/sdasilva/Documents/Mercurial/toSynchronize/TOTO", value);
-
-		}
-
-		System.out.println(t);
-		//System.out.println(result);
-		// System.out.println(hash[100]);
-		/*File f = new File(filePath);
-     String nameFile = (f.getName() != null) ? f.getName().substring(0,f.getName().lastIndexOf('.')) : "";
-     String repPath = f.getCanonicalPath().replace(this.repository.getBaseRepository().getDirectory().getAbsolutePath(), "").replace(f.getName(), "");
-     Util.writeIntoFile(""+this.repositoryHashName+repPath, nameFile+".hash",hash);*/
-	}
-
-
-
+        if (Util.getExt(srcFile).equals(".mp3")) 
+        {
+        	String name = f.getName().replace(".mp3", ".mp3hash"); 
+            Mp3Meta fileMetas = new Mp3Meta(f);
+            fileMetas.saveHashToFile(srcFile,destDirectory,name);
+        }
+        if (Util.getExt(srcFile).equals(".jpg")) 
+        {
+        	String name = f.getName().replace(".jpg", ".jpghash"); 
+        	JPGMeta2 jpgMeta = new JPGMeta2(f.getAbsolutePath());
+        	jpgMeta.saveHashToFile(srcFile,destDirectory,name);
+        }
+    }
 
 	public void initialisation(String installationPath) throws IOException {
 		File hg = new File(installationPath+".hg");
@@ -372,11 +375,6 @@ public void addFile(String filePath) throws CannotReadException, IOException, Ta
 		}
 
 	}
-
-
-
-
-
 
 	public void changeFile(String filePath, String nameFile) throws IOException{
 		CommitCommand ci = new CommitCommand(this.repository);
