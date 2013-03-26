@@ -4,6 +4,8 @@ target/
 .project
 .classpath
 .settings/
+hg/**
+.config/**
 # Package Files #
 **.jar
 **.war
