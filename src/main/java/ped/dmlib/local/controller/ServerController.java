@@ -64,6 +64,8 @@ public class ServerController
 			e.printStackTrace();
 		} catch (JpegFormatException e) {
 			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

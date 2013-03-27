@@ -57,12 +57,16 @@ public class Repo {
 	}
 	
 	public String getLibraryPath(String libraryName) {
+		String path = "";
 		if(this.librariesPaths.containsKey(libraryName))
-			return this.librariesPaths.get(libraryName);
-		
-		String path = this.librariesPaths.get("shared_media_center") + libraryName;
-		this.librariesPaths.put(libraryName, path);
-		
+		{
+			path = this.librariesPaths.get(libraryName);
+		}
+		else
+		{
+			path = System.getProperty("user.home")+"/SharedMediaCenter/" + libraryName;
+			this.librariesPaths.put(libraryName, path);
+		}
 		return path;
 	}
 	

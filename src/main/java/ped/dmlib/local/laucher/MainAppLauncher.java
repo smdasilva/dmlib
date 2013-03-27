@@ -31,7 +31,7 @@ public class MainAppLauncher
 		MainPanel myMainPanel = new MainPanel(localController, servController, frameWidth, frameHeight);
 		
 		myFrame.setSize(frameWidth, frameHeight);
-		myFrame.setLocation(400, 200);
+		myFrame.setLocation(160, 80);
 		myFrame.setTitle("Shared Media Center");
 		myFrame.setContentPane(myMainPanel);
 		

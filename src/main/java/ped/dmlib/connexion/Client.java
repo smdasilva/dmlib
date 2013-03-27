@@ -49,7 +49,7 @@ public class Client
 	private FactoryRepo factoryRepo;
 	private Repo localRepository;
 	
-	private String sharedMediaCenterPath = System.getProperty("user.home")+"/Shared Media Center/";
+	private String sharedMediaCenterPath = System.getProperty("user.home")+"/SharedMediaCenter/";
 	
 	/*public Client(String installationPath) throws IOException {
         this.installationPath = installationPath;      
@@ -198,7 +198,7 @@ public class Client
 		}
 	}
 	
-	public void addRepository(File rep) throws ImageProcessingException, FileNotFoundException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, JpegFormatException 
+	public void addRepository(File rep) throws Exception 
 	{
 		String libraryName = rep.getName();
 		String libraryPath = rep.getAbsolutePath();
@@ -211,6 +211,7 @@ public class Client
 		
 		for (File file : myFileList) {
 			generateFileMeta(file.getAbsolutePath(), libraryName);
+			generateFileHash(file.getAbsolutePath(), libraryName);
 			add();
 			commit(file.getAbsolutePath());
 		}

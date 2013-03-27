@@ -35,7 +35,7 @@ public class LocalController
 	{
 		myDico = new Dico();
 		watcherList = new ArrayList<Thread>();
-		String path = System.getProperty("user.home")+"/Shared Media Center";
+		String path = System.getProperty("user.home")+"/SharedMediaCenter/";
 		File startFile = new File(path);
 		if (! startFile.exists()) {
 			startFile.mkdir();

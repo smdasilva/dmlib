@@ -108,14 +108,14 @@ public class FactoryRepo {
 			if(!repoRemote.equals(localRepository))
 				remoteRepositories.add(repoRemote);
 			
-//                        if(!repoRemote.getAddress().equals(localRepository.getAddress()))
-//                        {
-//                            remoteRepositories.add(repoRemote);
-//                            /*if(repoRemote.getPort() != (localRepository.getPort()))
-//                            {
-//                                remoteRepositories.add(repoRemote);      
-//                            }*/
-//                        }
+//	            if(!repoRemote.getAddress().equals(localRepository.getAddress()))
+//	            {
+//	                remoteRepositories.add(repoRemote);
+//	                /*if(repoRemote.getPort() != (localRepository.getPort()))
+//	                {
+//	                    remoteRepositories.add(repoRemote);      
+//	                }*/
+//	            }
 		}
 	}
 
