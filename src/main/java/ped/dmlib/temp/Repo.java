@@ -19,7 +19,7 @@ public class Repo {
 	private Map<String, String> librariesPaths;
 	
 	public Repo() {
-		this.init(Util.getComputerFullName(), Util.myIP(), 8000);
+		this.init("Client1", "127.0.0.1", 8000);
 	}
 
 	public Repo(String name, String address, int port) {
@@ -64,7 +64,7 @@ public class Repo {
 		}
 		else
 		{
-			path = System.getProperty("user.home")+"/SharedMediaCenter/" + libraryName;
+			path = System.getProperty("user.home")+"/SharedMediaCenter2/" + libraryName;
 			this.librariesPaths.put(libraryName, path);
 		}
 		return path;

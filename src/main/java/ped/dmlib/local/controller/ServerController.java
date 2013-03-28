@@ -76,7 +76,81 @@ public class ServerController
 			repList = c.addServer(ip, port, repPath);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}	
             return repList;
+	}
+	
+	public void updateFile(File f)
+	{
+		String filePath = f.getAbsolutePath();
+		String repName = f.getParentFile().getName();
+		try {
+			if(c.isHashModified(filePath, repName)) {
+				System.out.println("push binaire");
+				c.commit(filePath);
+				c.binaryPushLibrary(repName);
+			}
+			else if(c.isMetaModified(filePath, repName)) {
+				System.out.println("push meta");
+				c.commit(filePath);
+				c.push();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (CannotReadException e) {
+			e.printStackTrace();
+		} catch (TagException e) {
+			e.printStackTrace();
+		} catch (ReadOnlyFileException e) {
+			e.printStackTrace();
+		} catch (InvalidAudioFrameException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void addFile(File f)
+	{
+		String filePath = f.getAbsolutePath();
+		String repName = f.getParentFile().getName();
+		
+		try {
+			c.generateFileMeta(filePath, repName);
+			c.add();
+			c.commit(filePath);
+			c.push();
+			c.binaryPushLibrary(repName);
+		} catch (ImageProcessingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (CannotReadException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (TagException e) {
+			e.printStackTrace();
+		} catch (ReadOnlyFileException e) {
+			e.printStackTrace();
+		} catch (InvalidAudioFrameException e) {
+			e.printStackTrace();
+		} catch (JpegFormatException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void delFile(File f)
+	{
+		String filePath = f.getAbsolutePath();
+		String repName = f.getParentFile().getName();
+		
+		c.commit(filePath);
+		c.push();
+		c.binaryPushLibrary(repName);
+	}
+
+	public String getFileName(String repName) {
+		return c.localRepository.getLibraryPath(repName);
 	}
 }

@@ -2,7 +2,9 @@ package ped.dmlib.local.model;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 
@@ -102,7 +104,7 @@ public class Mp3Meta implements Serializable
 		if(f.exists()) {
 		Util.clearFile(f.getAbsolutePath()); }
 		for(FieldKey fk : FieldKey.values()) {
-			if (tag.getFirst(fk) != null) {
+			if (!tag.getFirst(fk).equals("")) {
 				Util.writeIntoFile(path, name, fk+"|"+tag.getFirst(fk));
 			}
 		}	
@@ -125,21 +127,27 @@ public class Mp3Meta implements Serializable
         Util.writeIntoFile(destPath, name, br.readLine());
 	}
 	
-	/*
 	public void saveTagFromFile(String path) throws IOException, KeyNotFoundException, FieldDataInvalidException, CannotWriteException {
 		InputStream ips=new FileInputStream(path); 
 		InputStreamReader ipsr=new InputStreamReader(ips);
 		BufferedReader br=new BufferedReader(ipsr);
 		String line;
-
+		boolean modif = false;
 		while ((line=br.readLine())!=null){
 			String[] str = line.split("\\|");
 
+			System.out.println("TEST : -------------------------------"+this.tag.getFirst(FieldKey.valueOf(str[0])));
+			System.out.println("TEST : -------------------------------"+str[1]);
+			
 			if(!this.tag.getFirst(FieldKey.valueOf(str[0])).equals(str[1])) {
+				modif = true;
 				this.tag.setField(FieldKey.valueOf(str[0]), str[1]);
 			}    
 		}
+		
 		br.close(); 
-		save();
-	}*/
+		if(modif) {
+		save(); 
+		}
+	}
 }

@@ -61,11 +61,10 @@ public class FactoryRepo {
 		
 		for (Repo tmpRepo : this.remoteRepositories) {
 			if(tmpRepo.getAddress().equals(ia.getHostAddress()))
+			{
 				return tmpRepo;
-		}
-		
-		System.out.println(this.remoteRepositories);
-		
+			}
+		}		
 		return null;
 	}
 	

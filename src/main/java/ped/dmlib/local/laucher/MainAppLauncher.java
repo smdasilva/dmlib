@@ -11,12 +11,15 @@ import ped.dmlib.local.presentation.MainPanel;
 
 public class MainAppLauncher 
 {
+	static LocalController localController = null;
+	static ServerController servController = null;
+	
+	static MainPanel myMainPanel = null;
+	
 	public static void main(String[] args) 
 	{		
 		int frameHeight = 600;
 		int frameWidth = 1000;
-		LocalController localController = null;
-		ServerController servController = null;
 		
 		Config config = new Config(".");
 		config.initAll();
@@ -28,7 +31,7 @@ public class MainAppLauncher
 			e.printStackTrace();
 		}
 		JFrame myFrame = new JFrame();
-		MainPanel myMainPanel = new MainPanel(localController, servController, frameWidth, frameHeight);
+		myMainPanel = new MainPanel(localController, servController, frameWidth, frameHeight);
 		
 		myFrame.setSize(frameWidth, frameHeight);
 		myFrame.setLocation(160, 80);
@@ -38,5 +41,10 @@ public class MainAppLauncher
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		myFrame.setResizable(false);
 		myFrame.setVisible(true);
+	}
+	
+	public static MainPanel getMainPanel()
+	{
+		return myMainPanel;
 	}
 }

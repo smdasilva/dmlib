@@ -52,17 +52,17 @@ public class AddServerPanel extends JPanel
 				AddServerPanel panel = (AddServerPanel) ((Component) e.getSource()).getParent();
 				String ip = panel.serverAdd2.getText();
 				String port = panel.serverAdd3.getText();
-				String repPath = System.getProperty("user.home")+"/Shared Media Center";
+				String repPath = System.getProperty("user.home")+"/SharedMediaCenter";
 				
 				Map<String, String> repList = main.getServerController().addServer(ip, port, repPath);
-                                if(repList != null)
-                                {
-                                    for(String rep : repList.keySet())
-                                    {
-                                        File f = new File(repList.get(rep));
-                                        main.getTreePanel().refreshTreePanel(f);
-                                    }
-                                }
+//                if(repList != null)
+//                {
+//                    for(String rep : repList.keySet())
+//                    {
+//                        File f = new File(repList.get(rep));
+//                        main.getTreePanel().refreshTreePanel(f);
+//                    }
+//                }
 				JFrame frame = (JFrame) (panel.getParent().getParent().getParent());
 				frame.dispose();
 			}

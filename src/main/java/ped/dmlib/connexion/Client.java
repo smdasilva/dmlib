@@ -36,20 +36,19 @@ import com.aragost.javahg.commands.AddCommand;
 import com.aragost.javahg.commands.CommitCommand;
 import com.aragost.javahg.commands.PullCommand;
 import com.aragost.javahg.commands.PushCommand;
+import com.aragost.javahg.commands.StatusCommand;
+import com.aragost.javahg.commands.StatusResult;
 import com.aragost.javahg.commands.UpdateCommand;
 import com.aragost.javahg.internals.Server;
 import com.drew.imaging.ImageProcessingException;
 import com.sun.org.apache.bcel.internal.generic.PUSH;
 import java.util.Map;
 
-
 public class Client 
 {
 	private ArrayList<File> myFileList = new ArrayList<File>();
 	private FactoryRepo factoryRepo;
-	private Repo localRepository;
-	
-	private String sharedMediaCenterPath = System.getProperty("user.home")+"/SharedMediaCenter/";
+	public Repo localRepository;
 	
 	/*public Client(String installationPath) throws IOException {
         this.installationPath = installationPath;      
@@ -127,7 +126,6 @@ public class Client
 		update();
 		
 		Repo remoteRepo = this.factoryRepo.getRemoteRepository(server);
-		System.out.println(remoteRepo);
 		binaryPullAllLibrary(repPath, remoteRepo);
 		
 		this.factoryRepo.saveRepositories();
@@ -138,28 +136,28 @@ public class Client
                 return this.localRepository.getLibrariesPaths();
 	}
 	
-	private void binaryPullLibrary(Repo remote, String libraryName) {
+	public void binaryPullLibrary(Repo remote, String libraryName) {
 		BinaryFileTransfer bft = new RsyncTransfer(this.localRepository, remote);
 		bft.pull(libraryName, "*");
 	}
 
-	private void binaryPullAllLibrary(String repPath, Repo remoteRepo) {
-		for (String libraryName : remoteRepo.getLibraries()) {
-			this.localRepository.addLibrary(libraryName, repPath + "/" + libraryName);
-			binaryPullLibrary(remoteRepo, libraryName);
+	public void binaryPullAllLibrary(String repPath, Repo remoteRepo) {
+		if(remoteRepo != null) {
+			for (String libraryName : remoteRepo.getLibraries()) {
+				this.localRepository.addLibrary(libraryName, repPath + "/" + libraryName);
+				binaryPullLibrary(remoteRepo, libraryName);
+			}
 		}
 	}
 	
-	private void binaryPushLibrary(String libraryName) {
+	public void binaryPushLibrary(String libraryName) {
 		for (Repo remote : this.factoryRepo.getRemoteRepositories()) {
-			System.out.println(libraryName);
-			System.out.println(remote);
 			BinaryFileTransfer bft = new RsyncTransfer(this.localRepository, remote);
 			bft.push(libraryName, "*");
 		}
 	}
 	
-	private void binaryPushAllLibrary() {
+	public void binaryPushAllLibrary() {
 		for (String libraryName : this.localRepository.getLibraries()) {
 			binaryPushLibrary(libraryName);
 		}
@@ -226,6 +224,64 @@ public class Client
 		PullCommand pull = new PullCommand(this.repository);
 		return pull.execute(source);
 	}
+	
+	 public boolean isMetaModified(String filePath, String repositoryName ) throws IOException, CannotReadException, TagException, ReadOnlyFileException, InvalidAudioFrameException, Exception {
+         // Regeneration of the Metadata file and the Hash file
+         generateFileMeta(filePath, repositoryName);
+         
+
+         // Recuperation of the name of the file without the extension
+         File f = new File(filePath);
+         String ext = Util.getExt(filePath);
+         String nameWithoutExt = f.getName().replace(Util.getExt(filePath), "");
+
+		 String repMetaPath = "./"+this.repositoryMetaName+"/"+getDirectoryFile(repositoryName, filePath).replace(Util.getExt(filePath), "");
+		
+		 String finalPath = "";
+		 if(ext.equals(".mp3")) {
+		         finalPath = repMetaPath+".mp3meta";
+		 }
+		 else if(ext.equals(".jpg")) {
+		         finalPath = repMetaPath+".jpgmeta";
+		 }
+
+         // Check if the meta has been modified
+         StatusResult result = status(finalPath);
+         if(!result.getModified().isEmpty()) {
+                 return true;
+         }
+
+         return false;
+
+	 }
+
+
+	 public boolean isHashModified(String filePath, String repositoryName ) throws IOException, CannotReadException, TagException, ReadOnlyFileException, InvalidAudioFrameException, Exception {
+         // Regeneration of the Metadata file and the Hash file
+         generateFileHash(filePath, repositoryName);
+
+         // Recuperation of the name of the file without the extension
+         File f = new File(filePath);
+         String ext = Util.getExt(filePath);
+         String nameWithoutExt = f.getName().replace(Util.getExt(filePath), "");
+
+		 String repMetaPath = "./"+this.repositoryHashName+"/"+getDirectoryFile(repositoryName, filePath).replace(Util.getExt(filePath), "");
+		
+		 String finalPath = "";
+		 if(ext.equals(".mp3")) {
+		         finalPath = repMetaPath+".mp3hash";
+		 }
+		 else if(ext.equals(".jpg")) {
+		         finalPath = repMetaPath+".jpghash";
+		 }
+		         // Check if the meta has been modified
+		         StatusResult result = status(finalPath);
+		         if(!result.getModified().isEmpty()) {
+		                 return true;
+		         }
+		
+		         return false;
+		 }
 
 	/*public void RepositoryUpdate(String repository) throws IOException, ImageProcessingException, CannotReadException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
 		List<String> listFile = new ArrayList<String>();                                                                    
@@ -319,6 +375,16 @@ public void addFile(String filePath) throws CannotReadException, IOException, Ta
 		UpdateCommand up = new UpdateCommand(this.repository);
 		up.execute();
 	}
+	
+    public StatusResult status() {
+        StatusCommand status = new StatusCommand(this.repository);
+        return status.execute();
+       }
+    
+    public StatusResult status(String path) {
+        StatusCommand status = new StatusCommand(this.repository);
+        return status.execute(path);
+       }
 
 	public String getDirectoryFile(String repositoryName, String fileAbsolutePath)
 	{
@@ -342,7 +408,7 @@ public void addFile(String filePath) throws CannotReadException, IOException, Ta
                 if (Util.getExt(srcFile).equals(".jpg")) {
                     String name = f.getName().replace(".jpg", ".jpgmeta"); 
                     JPGMeta2 jpgMeta = new JPGMeta2(f.getAbsolutePath());
-                    jpgMeta.saveTagFromFile(destDirectory,name);
+                    jpgMeta.saveTagToFile(destDirectory,name);
                 }
                 
                 
@@ -389,6 +455,10 @@ public void addFile(String filePath) throws CannotReadException, IOException, Ta
 		push.on(this.repository).execute("http://cody:8000");
 	}
 
+	public void binaryPushFile(File f) {
+		System.out.println(f.getAbsolutePath());	
+	}
+
 	/*   public boolean isFileModified(File f, String sha)
         {
          FileHashSum hash = new FileHashSum();
@@ -418,10 +488,7 @@ public void addFile(String filePath) throws CannotReadException, IOException, Ta
             return diff.execute();
         }
 
-        public StatusResult status() {
-         StatusCommand status = new StatusCommand(this.repository);
-         return status.execute();
-        }
+
 
         public void outGoingFonc ()throws IOException{
 

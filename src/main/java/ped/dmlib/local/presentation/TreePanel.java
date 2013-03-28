@@ -34,7 +34,9 @@ public class TreePanel extends JPanel
 		this.setBorder(BorderFactory.createLoweredBevelBorder());
 		this.setLayout(myBorderLayout);
 		
-		myRoot = new MyRepDTO("Shared Media Center", 0, System.getProperty("user.home")+"/Shared Media Center");
+		myRoot = new MyRepDTO("Shared Media Center", 0, System.getProperty("user.home")+"/SharedMediaCenter");
+		File f = new File(System.getProperty("user.home")+"/SharedMediaCenter");
+		myController.constructTree(f, myRoot);
 		
 		myTreeModel = new DefaultTreeModel(myRoot);
 	    myTreeModel.setAsksAllowsChildren(true);

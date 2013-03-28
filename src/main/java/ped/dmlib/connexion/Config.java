@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import ped.dmlib.Util;
+import ped.dmlib.local.laucher.MainAppLauncher;
 
 public class Config {
 	private static final String HOOK = "[hooks]\n" +

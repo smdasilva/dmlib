@@ -1,5 +1,7 @@
 package ped.dmlib.local.controller;
 
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,6 +46,7 @@ public class LocalController
 		try {
 			Thread myWatcher = new MyFileWatcher(dir, true);
 			myWatcher.start();
+			addFileWatcher(System.getProperty("user.home")+"/Bureau/PED/dmlib/hg/Meta");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -210,6 +213,14 @@ public class LocalController
 	public void deleteFile(int fileID)
 	{
 		File temp = new File(myDico.getAbsPath(fileID));
+        File toDel = new File(System.getProperty("user.home")+"/SharedMediaCenter/"+temp.getParentFile().getName()+"/"+temp.getName());
+        File toDel2 = new File(System.getProperty("user.home")+"/SharedMediaCenter2/"+temp.getParentFile().getName()+"/"+temp.getName());
+        	
+    	if(toDel.exists()) {
+    		toDel.delete();
+    	} else if (toDel2.exists()) {
+    		toDel2.delete();
+    	}
 		temp.delete();
 	}
 	

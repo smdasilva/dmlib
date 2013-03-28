@@ -3,10 +3,19 @@ package ped.dmlib.local.model;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.PixelGrabber;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.SortedMap;
+
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
+import org.jaudiotagger.tag.FieldDataInvalidException;
+
+import com.drew.lang.Rational;
 
 import ped.dmlib.Util;
 
@@ -72,7 +81,7 @@ public class JPGMeta2 {
             return "_";
         }
         
-        public void saveTagFromFile(String path, String name) throws IOException, FileNotFoundException, JpegFormatException {   
+        public void saveTagToFile(String path, String name) throws IOException, FileNotFoundException, JpegFormatException {   
             
             File f = new File(path+name);
 		if(f.exists()) {
@@ -98,7 +107,7 @@ public class JPGMeta2 {
         }                                 
         
       
-        /*public void saveTagToFile(String path) throws IOException, KeyNotFoundException, FieldDataInvalidException, CannotWriteException, TagFormatException, ExifFormatException, FileNotFoundException, JpegFormatException, JAXBException {
+        public void saveTagFromFile(String path) throws IOException, FieldDataInvalidException, CannotWriteException, TagFormatException, ExifFormatException, FileNotFoundException, JpegFormatException {
         InputStream ips=new FileInputStream(path);
         InputStreamReader ipsr=new InputStreamReader(ips);
         BufferedReader br=new BufferedReader(ipsr);
@@ -144,7 +153,7 @@ public class JPGMeta2 {
         }        
         headers.save(false);
         br.close();          
-    }  */
+    }  
         
         
     public static void saveHashToFile(String source, String destPath, String name) throws FileNotFoundException, IOException {
